@@ -1,0 +1,23 @@
+{
+  "name": "vpc-describe",
+  "version": "1.0.0",
+  "description": "Describe the vpc with all resources attached with it.",
+  "main": "dist/index.js",
+  "scripts": {
+    "prestart": "rm -rf dist",
+    "start": "tsc && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "author": "Rishikesh Darandale",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "commander": "^8.3.0"
+  }
+}
