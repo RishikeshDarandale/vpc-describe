@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "Describe the vpc with all resources attached with it.",
   "main": "dist/index.js",
+  "bin": {
+    "vpc-describe": "dist/index.js"
+  },
   "scripts": {
-    "prestart": "rm -rf dist",
-    "start": "tsc && node dist/index.js",
+    "prebuild": "rm -rf dist",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,9 +18,22 @@
   "author": "Rishikesh Darandale",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^17.0.15",
     "typescript": "^4.5.5"
   },
   "dependencies": {
-    "commander": "^8.3.0"
+    "@aws-sdk/client-auto-scaling": "^3.53.0",
+    "@aws-sdk/client-ec2": "^3.49.0",
+    "@aws-sdk/client-ecs": "^3.53.0",
+    "@aws-sdk/client-elastic-load-balancing": "^3.53.0",
+    "@aws-sdk/client-elastic-load-balancing-v2": "^3.53.0",
+    "@aws-sdk/client-elasticache": "^3.53.0",
+    "@aws-sdk/client-elasticsearch-service": "^3.53.0",
+    "@aws-sdk/client-lambda": "^3.53.0",
+    "@aws-sdk/client-rds": "^3.53.0",
+    "@aws-sdk/credential-providers": "^3.49.0",
+    "commander": "^9.0.0",
+    "listr": "^0.14.3",
+    "ora": "^6.1.0"
   }
 }
