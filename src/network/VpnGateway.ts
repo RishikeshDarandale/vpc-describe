@@ -1,0 +1,44 @@
+import {
+  DescribeVpnGatewaysCommand,
+  EC2Client,
+} from "@aws-sdk/client-ec2";
+import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface VpnGateway {
+  id: string,
+  type: string,
+  state: string,
+};
+
+export const getVPNGateways = async (
+  region: string = "us-east-1",
+  profile: string = "default",
+  id: string
+): Promise<VpnGateway[]> => {
+  // get the client
+  const client = new EC2Client({
+    region,
+    credentials: fromIni({ profile }),
+  });
+  // describe the vpn gateways with specified vpc id
+  let vpnGateways: VpnGateway[] = [];
+  const command = new DescribeVpnGatewaysCommand({
+    Filters: [{ Name: "attachment.vpc-id", Values: [id] }],
+  });
+  try {
+    const response = await client.send(command);
+    response?.VpnGateways?.forEach((gateway) => {
+      vpnGateways.push({
+        state: gateway.State,
+        id: gateway.VpnGatewayId,
+        type: gateway.Type,
+      });
+    })
+  } catch (error) {
+    const { requestId, cfId, extendedRequestId } = error.$metadata;
+    throw new Error(
+      `${requestId}: Error getting the VPN gateways of vpc ${id}`
+    );
+  }
+  return vpnGateways;
+};

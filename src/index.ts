@@ -24,6 +24,7 @@ import { Command } from "commander";
 import Listr from "listr";
 import { getAutoScalingGroups } from "./network/AutoScalingGroup";
 import { getEC2s } from "./network/EC2";
+import { EcsService, getEcsServices } from "./network/Ecs";
 import { getCacheClusters } from "./network/Elasticache";
 import { getInternetGateways } from "./network/InternetGateway";
 import { getLambdas } from "./network/Lambda";
@@ -41,6 +42,7 @@ import { getTransitGatewayAttachments } from "./network/TransitGatewayAttachment
 
 import { getVpc } from "./network/Vpc";
 import { getVpcEndpoints } from "./network/VpcEndpoint";
+import { getVPNGateways, VpnGateway } from "./network/VpnGateway";
 
 (async () => {
   const program = new Command();
@@ -371,6 +373,40 @@ const tasks = new Listr([
               } catch (error) {
                 throw new Error(
                   "Could not list v2 load balancers, please check the vpc id / credentials provided"
+                );
+              }
+            },
+          },
+          {
+            title: "Checking for ECS services",
+            task: async (ctx) => {
+              try {
+                const ecs: EcsService[] = await getEcsServices(
+                  ctx.region,
+                  ctx.profile,
+                  ctx.id
+                );
+                ctx.vpc.ecs = ecs;
+              } catch (error) {
+                throw new Error(
+                  "Could not list ECS services, please check the vpc id / credentials provided"
+                );
+              }
+            },
+          },
+          {
+            title: "Checking for VPN Gateways",
+            task: async (ctx) => {
+              try {
+                const vpnGateways: VpnGateway[] = await getVPNGateways(
+                  ctx.region,
+                  ctx.profile,
+                  ctx.id
+                );
+                ctx.vpc.vpnGateways = vpnGateways;
+              } catch (error) {
+                throw new Error(
+                  "Could not list ECS services, please check the vpc id / credentials provided"
                 );
               }
             },
