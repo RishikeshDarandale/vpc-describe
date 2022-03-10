@@ -48,7 +48,7 @@ export const getEcsServices = async (
         const services = await client.send(describeServiceCommand);
         for (const service of services?.services) {
           if (
-            serviceInVpc(
+            await serviceInVpc(
               service.networkConfiguration.awsvpcConfiguration.subnets,
               ec2client,
               id
@@ -78,19 +78,17 @@ const serviceInVpc = async (
   id: String
 ): Promise<boolean> => {
   let present = false;
-  for (const subnet of subnets) {
-    const command = new DescribeSubnetsCommand({
-      Filters: [{ Name: "subnet-id", Values: [subnet] }],
-    });
-    try {
-      const response = await client.send(command);
-      if (response?.Subnets?.[0]?.VpcId === id) {
-        present = true;
-      }
-    } catch (error) {
-      const { requestId, cfId, extendedRequestId } = error.$metadata;
-      throw new Error(`${requestId}: Error getting the subnets of vpc ${id}`);
+  const command = new DescribeSubnetsCommand({
+    Filters: [{ Name: "subnet-id", Values: subnets }],
+  });
+  try {
+    const response = await client.send(command);
+    if (response?.Subnets?.[0]?.VpcId === id) {
+      present = true;
     }
+  } catch (error) {
+    const { requestId, cfId, extendedRequestId } = error.$metadata;
+    throw new Error(`${requestId}: Error getting the subnets of vpc ${id}`);
   }
   return present;
 };
