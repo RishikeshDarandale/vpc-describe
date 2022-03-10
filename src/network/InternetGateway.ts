@@ -30,7 +30,6 @@ export const getInternetGateways = async (
     });
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;
-    console.error(error);
     throw new Error(
       `${requestId}: Error getting the Internet gateways of vpc ${id}`
     );

@@ -36,7 +36,6 @@ import {
       });
     } catch (error) {
       const { requestId, cfId, extendedRequestId } = error.$metadata;
-      console.error(error);
       throw new Error(
         `${requestId}: Error getting the network interfaces of vpc ${id}`
       );
