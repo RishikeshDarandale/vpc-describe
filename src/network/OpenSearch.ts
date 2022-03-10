@@ -1,22 +1,28 @@
 import {
   DescribeElasticsearchDomainsCommand,
-  ElasticsearchDomainStatus,
   ElasticsearchServiceClient,
   ListDomainNamesCommand,
 } from "@aws-sdk/client-elasticsearch-service";
 import { fromIni } from "@aws-sdk/credential-providers";
 
+export interface ESDomain {
+  id: string,
+  name: string,
+  arn: string,
+  subnetIds: string,
+};
+
 export const getOpenSearchDomains = async (
   region: string = "us-east-1",
   profile: string = "default",
   id: string
-): Promise<ElasticsearchDomainStatus[]> => {
+): Promise<ESDomain[]> => {
   // get the client
   const client = new ElasticsearchServiceClient({
     region,
     credentials: fromIni({ profile }),
   });
-  let domains: ElasticsearchDomainStatus[];
+  let domains: ESDomain[] = [];
   const command = new ListDomainNamesCommand({});
   try {
     // get all the domains
@@ -31,9 +37,17 @@ export const getOpenSearchDomains = async (
       });
       const describeDomainsResponse = await client.send(describeDomainsCommand);
       // filter the open search domains byy vpc id
-      domains = describeDomainsResponse?.DomainStatusList.filter(
-        (domain) => domain.VPCOptions?.VPCId === id
-      );
+      describeDomainsResponse?.DomainStatusList.forEach(
+        (domain) => {
+          if (domain.VPCOptions?.VPCId === id) {
+            domains.push({
+              id: domain.DomainId,
+              name: domain.DomainName,
+              arn: domain.DomainName,
+              subnetIds: domain.VPCOptions?.SubnetIds?.toString(),
+            });
+          }
+        });
     }
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;

@@ -1,5 +1,12 @@
-import { DescribeVpcsCommand, EC2Client, Vpc } from "@aws-sdk/client-ec2";
+import { DescribeVpcsCommand, EC2Client } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface Vpc {
+  id: string,
+  cidr: string,
+  default: boolean,
+  state: string,
+};
 
 export const getVpc = async (
   region: string = "us-east-1",
@@ -18,7 +25,12 @@ export const getVpc = async (
   });
   try {
     const response = await client.send(command);
-    vpc = response.Vpcs?.[0];
+    vpc = {
+      id: response.Vpcs?.[0]?.VpcId,
+      cidr: response.Vpcs?.[0]?.CidrBlock,
+      default: response.Vpcs?.[0]?.IsDefault,
+      state: response.Vpcs?.[0]?.State?.toString(),
+    };
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(`${requestId}: Error getting the vpc `);

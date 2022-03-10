@@ -1,9 +1,14 @@
 import {
   DescribeNatGatewaysCommand,
   EC2Client,
-  NatGateway,
 } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface NatGateway {
+  id: string,
+  state: string,
+  subnetId: string,
+};
 
 export const getNatGateways = async (
   region: string = "us-east-1",
@@ -16,13 +21,19 @@ export const getNatGateways = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let natGateways: NatGateway[];
+  let natGateways: NatGateway[] = [];
   const command = new DescribeNatGatewaysCommand({
     Filter: [{ Name: "vpc-id", Values: [id] }],
   });
   try {
     const response = await client.send(command);
-    natGateways = response.NatGateways;
+    response.NatGateways?.forEach((ngw) =>{
+      natGateways.push({
+        id: ngw.NatGatewayId,
+        state: ngw.State?.toString(),
+        subnetId: ngw.SubnetId,
+      });
+    });
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(

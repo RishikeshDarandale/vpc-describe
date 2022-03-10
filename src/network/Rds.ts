@@ -1,9 +1,17 @@
 import {
-  DBInstance,
   DescribeDBInstancesCommand,
   RDSClient,
 } from "@aws-sdk/client-rds";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface DBInstance {
+  id: string,
+  name: string,
+  arn: string,
+  class: string,
+  engine: string,
+  status: string,
+};
 
 export const getRDSInstances = async (
   region: string = "us-east-1",
@@ -21,7 +29,14 @@ export const getRDSInstances = async (
     const response = await client.send(command);
     response.DBInstances?.forEach((db) => {
       // db instances associated with vpc
-      if (db.DBSubnetGroup?.VpcId === id) dbInstances.push(db);
+      if (db.DBSubnetGroup?.VpcId === id) dbInstances.push({
+        id: db.DBInstanceIdentifier,
+        name: db.DBName,
+        arn: db.DBInstanceArn,
+        class: db.DBInstanceClass,
+        engine: db.Engine,
+        status: db.DBInstanceStatus?.toString(),
+      });
     });
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;

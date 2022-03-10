@@ -1,28 +1,41 @@
 import {
   DescribeLoadBalancersCommand,
   ElasticLoadBalancingClient,
-  LoadBalancerDescription,
 } from "@aws-sdk/client-elastic-load-balancing";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface LoadBalancer {
+  name: string,
+  dnsName: string,
+  subnets: string,
+  instances: string,
+  availabilityZones: string,
+};
 
 export const getLoadBalancers = async (
   region: string = "us-east-1",
   profile: string = "default",
   id: string
-): Promise<LoadBalancerDescription[]> => {
+): Promise<LoadBalancer[]> => {
   // get the client
   const client = new ElasticLoadBalancingClient({
     region,
     credentials: fromIni({ profile }),
   });
-  let lbs: LoadBalancerDescription[] = [];
+  let lbs: LoadBalancer[] = [];
   const command = new DescribeLoadBalancersCommand({});
   try {
     // get all the domains
     const response = await client.send(command);
     response?.LoadBalancerDescriptions?.forEach((lb) => {
       if (lb.VPCId === id) {
-        lbs.push(lb);
+        lbs.push({
+          name: lb.LoadBalancerName,
+          dnsName: lb.DNSName,
+          availabilityZones: lb.AvailabilityZones?.toString(),
+          subnets: lb.Subnets?.toString(),
+          instances: lb.Instances.toString(),
+        });
       }
     });
   } catch (error) {

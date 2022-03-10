@@ -1,9 +1,10 @@
-import {
-  DescribeRouteTablesCommand,
-  EC2Client,
-  RouteTable,
-} from "@aws-sdk/client-ec2";
+import { DescribeRouteTablesCommand, EC2Client } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface RouteTable {
+  id: string;
+  subnetIds: string;
+}
 
 export const getRouteTables = async (
   region: string = "us-east-1",
@@ -16,13 +17,18 @@ export const getRouteTables = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let routeTables: RouteTable[];
+  let routeTables: RouteTable[] = [];
   const command = new DescribeRouteTablesCommand({
     Filters: [{ Name: "vpc-id", Values: [id] }],
   });
   try {
     const response = await client.send(command);
-    routeTables = response.RouteTables;
+    response.RouteTables?.forEach((rt) => {
+      routeTables.push({
+        id: rt.RouteTableId,
+        subnetIds: rt.Associations?.map((as) => as.SubnetId).join(","),
+      });
+    });
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(

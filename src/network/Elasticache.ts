@@ -1,10 +1,17 @@
 import {
-  CacheCluster,
   DescribeCacheClustersCommand,
   DescribeCacheSubnetGroupsCommand,
   ElastiCacheClient,
 } from "@aws-sdk/client-elasticache";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface CacheCluster {
+  id: string,
+  type: string,
+  engine: string,
+  engineVersion: string,
+  status: string,
+};
 
 export const getCacheClusters = async (
   region: string = "us-east-1",
@@ -23,7 +30,13 @@ export const getCacheClusters = async (
     await Promise.all(
       response?.CacheClusters?.map(async (cc) => {
         if (await ccSubnetInVpc(cc.CacheSubnetGroupName, client, id)) {
-          ccs.push(cc);
+          ccs.push({
+            id: cc.CacheClusterId,
+            type: cc.CacheNodeType,
+            engine: cc.Engine,
+            engineVersion: cc.EngineVersion,
+            status: cc.CacheClusterStatus,
+          });
         }
       })
     );

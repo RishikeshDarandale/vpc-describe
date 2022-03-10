@@ -1,10 +1,18 @@
 import {
   AutoScalingClient,
-  AutoScalingGroup,
   DescribeAutoScalingGroupsCommand,
 } from "@aws-sdk/client-auto-scaling";
 import { DescribeSubnetsCommand, EC2Client, Subnet } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
+import { deserialize } from "v8";
+
+export interface AutoScalingGroup {
+  name: string,
+  arn: string,
+  minSize: number,
+  maxSize: number,
+  desiredCapacity: number,
+};
 
 export const getAutoScalingGroups = async (
   region: string = "us-east-1",
@@ -26,7 +34,13 @@ export const getAutoScalingGroups = async (
     const response = await client.send(command);
     await Promise.all(response?.AutoScalingGroups?.map(async (asg) => {
       if (await asgInVpc(asg.VPCZoneIdentifier, ec2client, id)) {
-        asgs.push(asg);
+        asgs.push({
+          name: asg.AutoScalingGroupName,
+          arn: asg.AutoScalingGroupARN,
+          maxSize: asg.MaxSize,
+          minSize: asg.MinSize,
+          desiredCapacity: asg.DesiredCapacity,
+        });
       }
     }));
   } catch (error) {

@@ -1,48 +1,32 @@
 #!/usr/bin/env node
 
-import { AutoScalingGroup } from "@aws-sdk/client-auto-scaling";
-import {
-  Instance,
-  InternetGateway,
-  NatGateway,
-  NetworkAcl,
-  NetworkInterface,
-  RouteTable,
-  SecurityGroup,
-  Subnet,
-  TransitGatewayVpcAttachment,
-  Vpc,
-  VpcEndpoint,
-} from "@aws-sdk/client-ec2";
-import { LoadBalancerDescription } from "@aws-sdk/client-elastic-load-balancing";
-import { LoadBalancer } from "@aws-sdk/client-elastic-load-balancing-v2";
-import { CacheCluster } from "@aws-sdk/client-elasticache";
-import { ElasticsearchDomainStatus } from "@aws-sdk/client-elasticsearch-service";
-import { FunctionConfiguration } from "@aws-sdk/client-lambda";
-import { DBInstance } from "@aws-sdk/client-rds";
 import { Command } from "commander";
 import Listr from "listr";
-import { getAutoScalingGroups } from "./network/AutoScalingGroup";
-import { getEC2s } from "./network/EC2";
+import {
+  AutoScalingGroup,
+  getAutoScalingGroups,
+} from "./network/AutoScalingGroup";
+import { EC2Instance, getEC2s } from "./network/EC2";
 import { EcsService, getEcsServices } from "./network/Ecs";
-import { getCacheClusters } from "./network/Elasticache";
-import { getInternetGateways } from "./network/InternetGateway";
-import { getLambdas } from "./network/Lambda";
-import { getLoadBalancers } from "./network/LoadBalancer";
-import { getV2LoadBalancers } from "./network/LoadBalancersv2";
-import { getNatGateways } from "./network/NatGateway";
-import { getNetworkACLs } from "./network/NetworkACL";
-import { getNetworkInterfaces } from "./network/NetworkInterfaces";
-import { getOpenSearchDomains } from "./network/OpenSearch";
-import { getRDSInstances } from "./network/Rds";
-import { getRouteTables } from "./network/RouteTable";
-import { getSecurityGroups } from "./network/SecurityGroups";
-import { getSubnets } from "./network/Subnet";
-import { getTransitGatewayAttachments } from "./network/TransitGatewayAttachment";
+import { CacheCluster, getCacheClusters } from "./network/Elasticache";
+import { getInternetGateways, InternetGateway } from "./network/InternetGateway";
+import { getLambdas, Lambda } from "./network/Lambda";
+import { getLoadBalancers, LoadBalancer } from "./network/LoadBalancer";
+import { getV2LoadBalancers, LoadBalancerV2 } from "./network/LoadBalancersv2";
+import { getNatGateways, NatGateway } from "./network/NatGateway";
+import { getNetworkACLs, NetworkAcl } from "./network/NetworkACL";
+import { getNetworkInterfaces, NetworkInterface } from "./network/NetworkInterfaces";
+import { ESDomain, getOpenSearchDomains } from "./network/OpenSearch";
+import { DBInstance, getRDSInstances } from "./network/Rds";
+import { getRouteTables, RouteTable } from "./network/RouteTable";
+import { getSecurityGroups, SecurityGroup } from "./network/SecurityGroups";
+import { getSubnets, Subnet } from "./network/Subnet";
+import { getTransitGatewayAttachments, TransitGateway } from "./network/TransitGatewayAttachment";
 
-import { getVpc } from "./network/Vpc";
-import { getVpcEndpoints } from "./network/VpcEndpoint";
+import { getVpc, Vpc } from "./network/Vpc";
+import { getVpcEndpoints, VpcEndpoint } from "./network/VpcEndpoint";
 import { getVPNGateways, VpnGateway } from "./network/VpnGateway";
+import { output } from "./output/Console";
 
 (async () => {
   const program = new Command();
@@ -77,7 +61,10 @@ const tasks = new Listr([
       try {
         const vpc: Vpc = await getVpc(ctx.region, ctx.profile, ctx.id);
         ctx.vpc = {};
-        ctx.vpc.vpc = vpc;
+        ctx.vpc.vpc = {
+          msg: 'Your VPC',
+          data: vpc,
+        };
       } catch (error) {
         throw new Error(
           "Could not describe the vpc, please check the vpc id / credentials provided"
@@ -96,7 +83,10 @@ const tasks = new Listr([
               try {
                 const internetGateways: InternetGateway[] =
                   await getInternetGateways(ctx.region, ctx.profile, ctx.id);
-                ctx.vpc.internetGateways = internetGateways;
+                ctx.vpc.internetGateways = {
+                  msg: 'Internet Gateway associated with VPC',
+                  data: internetGateways,
+                }
               } catch (error) {
                 throw new Error(
                   "Could not describe the internet gateways, please check the vpc id / credentials provided"
@@ -113,7 +103,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.natGateways = natGateways;
+                ctx.vpc.natGateways = {
+                  msg: 'NAT Gateway associated with VPC',
+                  data: natGateways,
+                }
               } catch (error) {
                 throw new Error(
                   "Could not describe the nat gateways, please check the vpc id / credentials provided"
@@ -130,7 +123,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.nACLs = nACLs;
+                ctx.vpc.nACLs = {
+                  msg: 'Network ACL associated with VPC',
+                  data: nACLs
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the network ACLs, please check the vpc id / credentials provided"
@@ -147,7 +143,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.routeTables = routeTables;
+                ctx.vpc.routeTables = {
+                  msg: 'Route Tables associated with VPC',
+                  data: routeTables,
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the route tables, please check the vpc id / credentials provided"
@@ -164,7 +163,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.securityGroups = securityGroups;
+                ctx.vpc.securityGroups = {
+                  msg: 'Security Groups associated with VPC',
+                  data: securityGroups
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the security groups, please check the vpc id / credentials provided"
@@ -181,7 +183,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.subnets = subnets;
+                ctx.vpc.subnets = {
+                  msg: 'Subnets associated with VPC',
+                  data: subnets
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the subnets, please check the vpc id / credentials provided"
@@ -193,13 +198,16 @@ const tasks = new Listr([
             title: "Checking for Transit Gateway attachments",
             task: async (ctx) => {
               try {
-                const transitGatewayAttachments: TransitGatewayVpcAttachment[] =
+                const transitGatewayAttachments: TransitGateway[] =
                   await getTransitGatewayAttachments(
                     ctx.region,
                     ctx.profile,
                     ctx.id
                   );
-                ctx.vpc.transitGatewayAttachments = transitGatewayAttachments;
+                ctx.vpc.transitGatewayAttachments = {
+                  msg: 'Transit Gateway associated with VPC',
+                  data: transitGatewayAttachments
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the transit gateways associated, please check the vpc id / credentials provided"
@@ -216,7 +224,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.vpcEndpoints = vpcEndpoints;
+                ctx.vpc.vpcEndpoints = {
+                  msg: 'VPC Endpoints associated with VPC',
+                  data: vpcEndpoints
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the vpc endpoints associated, please check the vpc id / credentials provided"
@@ -228,12 +239,15 @@ const tasks = new Listr([
             title: "Checking for EC2s",
             task: async (ctx) => {
               try {
-                const ec2s: Instance[] = await getEC2s(
+                const ec2s: EC2Instance[] = await getEC2s(
                   ctx.region,
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.ec2s = ec2s;
+                ctx.vpc.ec2s = {
+                  msg: 'EC2s associated with VPC',
+                  data: ec2s
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the EC2s, please check the vpc id / credentials provided"
@@ -250,7 +264,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.asgs = asgs;
+                ctx.vpc.asgs = {
+                  msg: 'ASGs associated with VPC',
+                  data: asgs
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the ASGs, please check the vpc id / credentials provided"
@@ -262,12 +279,12 @@ const tasks = new Listr([
             title: "Checking for Network Interfaces",
             task: async (ctx) => {
               try {
-                const networkInterfaces: NetworkInterface[] = await getNetworkInterfaces(
-                  ctx.region,
-                  ctx.profile,
-                  ctx.id
-                );
-                ctx.vpc.networkInterfaces = networkInterfaces;
+                const networkInterfaces: NetworkInterface[] =
+                  await getNetworkInterfaces(ctx.region, ctx.profile, ctx.id);
+                ctx.vpc.networkInterfaces = {
+                  msg: 'Network Interfaces associated with VPC',
+                  data: networkInterfaces
+                };
               } catch (error) {
                 throw new Error(
                   "Could not describe the network interfaces, please check the vpc id / credentials provided"
@@ -279,12 +296,15 @@ const tasks = new Listr([
             title: "Checking for Lambda functions",
             task: async (ctx) => {
               try {
-                const functions: FunctionConfiguration[] = await getLambdas(
+                const functions: Lambda[] = await getLambdas(
                   ctx.region,
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.functions = functions;
+                ctx.vpc.functions = {
+                  msg: 'Lambda functions associated with VPC',
+                  data: functions
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list lambda functions, please check the vpc id / credentials provided"
@@ -301,7 +321,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.dbs = dbs;
+                ctx.vpc.dbs = {
+                  msg: 'RDS instances associated with VPC',
+                  data: dbs,
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list RDS instances, please check the vpc id / credentials provided"
@@ -318,7 +341,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.ccs = ccs;
+                ctx.vpc.ccs = {
+                  msg: 'Elasticache clusters associated with VPC',
+                  data: ccs
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list cache clusters, please check the vpc id / credentials provided"
@@ -330,12 +356,12 @@ const tasks = new Listr([
             title: "Checking for open search (formerly elastic search) domains",
             task: async (ctx) => {
               try {
-                const esDomains: ElasticsearchDomainStatus[] = await getOpenSearchDomains(
-                  ctx.region,
-                  ctx.profile,
-                  ctx.id
-                );
-                ctx.vpc.esDomains = esDomains;
+                const esDomains: ESDomain[] =
+                  await getOpenSearchDomains(ctx.region, ctx.profile, ctx.id);
+                ctx.vpc.esDomains = {
+                  msg: 'Elasticsearch/Opensearch associated with VPC',
+                  data: esDomains
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list elasticsearch domains, please check the vpc id / credentials provided"
@@ -347,12 +373,15 @@ const tasks = new Listr([
             title: "Checking for classic load balancers",
             task: async (ctx) => {
               try {
-                const lbs: LoadBalancerDescription[] = await getLoadBalancers(
+                const lbs: LoadBalancer[] = await getLoadBalancers(
                   ctx.region,
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.lbs = lbs;
+                ctx.vpc.lbs = {
+                  msg: 'Classic Load balancers associated with VPC',
+                  data: lbs
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list classic load balancers, please check the vpc id / credentials provided"
@@ -364,12 +393,15 @@ const tasks = new Listr([
             title: "Checking for v2 load balancers",
             task: async (ctx) => {
               try {
-                const lbsv2: LoadBalancer[] = await getV2LoadBalancers(
+                const lbsv2: LoadBalancerV2[] = await getV2LoadBalancers(
                   ctx.region,
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.lbsv2 = lbsv2;
+                ctx.vpc.lbsv2 = {
+                  msg: 'Load balancers v2 associated with VPC',
+                  data: lbsv2
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list v2 load balancers, please check the vpc id / credentials provided"
@@ -386,7 +418,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.ecs = ecs;
+                ctx.vpc.ecs = {
+                  msg: 'ECS services associated with VPC',
+                  data: ecs
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list ECS services, please check the vpc id / credentials provided"
@@ -403,7 +438,10 @@ const tasks = new Listr([
                   ctx.profile,
                   ctx.id
                 );
-                ctx.vpc.vpnGateways = vpnGateways;
+                ctx.vpc.vpnGateways = {
+                  msg: 'VPN Gateway associated with VPC',
+                  data: vpnGateways
+                };
               } catch (error) {
                 throw new Error(
                   "Could not list ECS services, please check the vpc id / credentials provided"
@@ -429,8 +467,8 @@ const describe = async (
       profile,
       id,
     });
-    // TODO: remove it
-    console.log(JSON.stringify(context));
+    // output in tabular form
+    output(context.vpc);
   } catch (error) {
     console.error(error);
   }

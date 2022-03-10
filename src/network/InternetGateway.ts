@@ -1,9 +1,12 @@
 import {
   DescribeInternetGatewaysCommand,
   EC2Client,
-  InternetGateway,
 } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface InternetGateway {
+  id: string,
+};
 
 export const getInternetGateways = async (
   region: string = "us-east-1",
@@ -16,13 +19,15 @@ export const getInternetGateways = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let internetGateways: InternetGateway[];
+  let internetGateways: InternetGateway[] = [];
   const command = new DescribeInternetGatewaysCommand({
     Filters: [{ Name: "attachment.vpc-id", Values: [id] }],
   });
   try {
     const response = await client.send(command);
-    internetGateways = response.InternetGateways;
+    response.InternetGateways?.forEach((igw) => {
+      internetGateways.push({id: igw.InternetGatewayId});
+    });
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     console.error(error);

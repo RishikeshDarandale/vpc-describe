@@ -1,9 +1,13 @@
 import {
   DescribeSecurityGroupsCommand,
   EC2Client,
-  SecurityGroup,
 } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
+
+export interface SecurityGroup {
+  id: string,
+  name: string,
+};
 
 export const getSecurityGroups = async (
   region: string = "us-east-1",
@@ -16,18 +20,23 @@ export const getSecurityGroups = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let securityTables: SecurityGroup[];
+  let securityGroups: SecurityGroup[] = [];
   const command = new DescribeSecurityGroupsCommand({
     Filters: [{ Name: "vpc-id", Values: [id] }],
   });
   try {
     const response = await client.send(command);
-    securityTables = response.SecurityGroups;
+    response.SecurityGroups?.forEach((sg) => {
+      securityGroups.push({
+        id: sg.GroupId,
+        name: sg.GroupName,
+      });
+    });
   } catch (error) {
     const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
       `${requestId}: Error getting the security groups of vpc ${id}`
     );
   }
-  return securityTables;
+  return securityGroups;
 };
