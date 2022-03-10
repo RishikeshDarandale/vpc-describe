@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import Listr from "listr";
 import {
   AutoScalingGroup,
@@ -40,12 +40,14 @@ import { output } from "./output/Console";
     )
     .option("-r, --region <region>", "provide the region", "us-east-1")
     .option("-p, --profile <profile>", "aws credential profile", "default")
+    .addOption(new Option('-o, --output <output>', 'tabular').choices(['tabular', 'json']))
     .action(
       await Promise.resolve(
         async () =>
           await describe(
             program.opts().region,
             program.opts().profile,
+            program.opts().output,
             program.opts().network
           )
       )
@@ -459,6 +461,7 @@ const tasks = new Listr([
 const describe = async (
   region: string = "us-east-1",
   profile: string = "default",
+  outputFormat: string = "tabular",
   id: string
 ): Promise<void> => {
   try {
@@ -468,7 +471,12 @@ const describe = async (
       id,
     });
     // output in tabular form
-    output(context.vpc);
+    if (outputFormat === 'tabular') {
+      output(context.vpc);
+    }
+    else if (outputFormat === 'json') {
+      console.log(JSON.stringify(context.vpc));
+    }
   } catch (error) {
     console.error(error);
   }
