@@ -1,0 +1,56 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.1
+
+###
+# Aliases are common things that can be used in CircleCI config file
+###
+aliases:
+  - &auth_npm
+    name: Authenticate with registry
+    command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/project/.npmrc
+
+  # common filters
+  - &pull-filter
+    branches:
+      only:
+        - /^pull\/.*$/
+        - /^dependabot\/.*$/
+
+  - &master-filter
+    branches:
+      only: master
+
+  - &release-filter
+    tags:
+      only: /^v.*/
+    branches:
+      ignore: /.*/
+
+# CircleCI workflows
+workflows:
+  version: 2
+  # workflow for pull request
+  pull_request:
+    jobs:
+      - node/test:
+          run-command: test -- --ci --maxWorkers=2
+          version: 16.14.0
+          filters: *pull-filter
+  # workflow for master branch
+  master:
+    jobs:
+      - node/test:
+          run-command: test -- --ci --maxWorkers=2
+          version: 16.14.0
+          filters: *master-filter
+  # Release workflow
+  release:
+    jobs:
+      - node/test:
+          setup:
+            - run: *auth_npm
+          run-command: deploy
+          version: 16.14.0
+          filters: *release-filter
