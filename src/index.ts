@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command, Option } from "commander";
-import Listr from "listr";
+import { Listr } from "listr2";
 import {
   AutoScalingGroup,
   getAutoScalingGroups,
@@ -56,13 +56,49 @@ import { output } from "./output/Console";
   await program.parseAsync();
 })();
 
-const tasks = new Listr([
+interface Ctx {
+  region: string,
+  profile: string,
+  id: string,
+  vpc: {
+    vpc?: Output,
+    internetGateways?: Output,
+    natGateways?: Output,
+    nACLs?: Output,
+    routeTables?: Output,
+    securityGroups?: Output,
+    subnets?: Output,
+    transitGatewayAttachments? :Output,
+    vpcEndpoints?: Output,
+    ec2s?: Output,
+    asgs?: Output,
+    networkInterfaces?: Output,
+    functions?: Output,
+    dbs?: Output,
+    ccs?: Output,
+    esDomains?: Output,
+    lbs?: Output,
+    lbsv2?: Output,
+    ecs?: Output,
+    vpnGateways?: Output,
+  }
+};
+
+interface Output {
+  msg: string,
+  data: Vpc | InternetGateway [] | NatGateway[] | NetworkAcl [] | RouteTable []
+   | SecurityGroup [] | Subnet [] | TransitGateway[] | VpcEndpoint []
+   | EC2Instance [] | AutoScalingGroup[] | NetworkInterface[] | Lambda []
+   | DBInstance [] | CacheCluster [] | ESDomain [] | LoadBalancer[]
+   | LoadBalancerV2 [] | EcsService [] | VpnGateway []
+};
+
+const tasks = new Listr<Ctx>([
   {
     title: "Finding vpc",
     task: async (ctx) => {
       try {
         const vpc: Vpc = await getVpc(ctx.region, ctx.profile, ctx.id);
-        ctx.vpc = {};
         ctx.vpc.vpc = {
           msg: 'Your VPC',
           data: vpc,
@@ -469,6 +505,7 @@ const describe = async (
       region,
       profile,
       id,
+      vpc: {},
     });
     // output in tabular form
     if (outputFormat === 'tabular') {
