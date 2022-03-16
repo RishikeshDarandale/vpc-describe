@@ -18,7 +18,7 @@ export const getEC2s = async (
   id: string
 ): Promise<EC2Instance[]> => {
   // get the client
-  const client = new EC2Client({
+  const client: EC2Client = new EC2Client({
     region,
     credentials: fromIni({ profile }),
   });

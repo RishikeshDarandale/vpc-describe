@@ -1,16 +1,18 @@
 import {
   DescribeCacheClustersCommand,
+  DescribeCacheClustersCommandOutput,
   DescribeCacheSubnetGroupsCommand,
+  DescribeCacheSubnetGroupsCommandOutput,
   ElastiCacheClient,
 } from "@aws-sdk/client-elasticache";
 import { fromIni } from "@aws-sdk/credential-providers";
 
 export interface CacheCluster {
-  id: string,
-  type: string,
-  engine: string,
-  engineVersion: string,
-  status: string,
+  id: string;
+  type: string;
+  engine: string;
+  engineVersion: string;
+  status: string;
 };
 
 export const getCacheClusters = async (
@@ -19,14 +21,17 @@ export const getCacheClusters = async (
   id: string
 ): Promise<CacheCluster[]> => {
   // get the client
-  const client = new ElastiCacheClient({
+  const client: ElastiCacheClient = new ElastiCacheClient({
     region,
     credentials: fromIni({ profile }),
   });
   let ccs: CacheCluster[] = [];
-  const command = new DescribeCacheClustersCommand({});
+  const command: DescribeCacheClustersCommand =
+    new DescribeCacheClustersCommand({});
   try {
-    const response = await client.send(command);
+    const response: DescribeCacheClustersCommandOutput = await client.send(
+      command
+    );
     await Promise.all(
       response?.CacheClusters?.map(async (cc) => {
         if (await ccSubnetInVpc(cc.CacheSubnetGroupName, client, id)) {
@@ -55,11 +60,14 @@ const ccSubnetInVpc = async (
   id: String
 ): Promise<boolean> => {
   let present = false;
-  const command = new DescribeCacheSubnetGroupsCommand({
-    CacheSubnetGroupName: cacheSubnetGroupName,
-  });
+  const command: DescribeCacheSubnetGroupsCommand =
+    new DescribeCacheSubnetGroupsCommand({
+      CacheSubnetGroupName: cacheSubnetGroupName,
+    });
   try {
-    const response = await client.send(command);
+    const response: DescribeCacheSubnetGroupsCommandOutput = await client.send(
+      command
+    );
     if (response?.CacheSubnetGroups?.[0]?.VpcId === id) {
       present = true;
     }

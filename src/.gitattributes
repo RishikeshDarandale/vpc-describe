@@ -1,0 +1,4 @@
+# github/linguist override
+# @read: https://github.com/github/linguist/issues/4558
+# @read: https://github.com/github/linguist/issues/5251
+*.ts linguist-language=Typescript

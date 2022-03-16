@@ -1,9 +1,16 @@
-import { DescribeSubnetsCommand, EC2Client } from "@aws-sdk/client-ec2";
+import {
+  DescribeSubnetsCommand,
+  DescribeSubnetsCommandOutput,
+  EC2Client,
+} from "@aws-sdk/client-ec2";
 import {
   DescribeServicesCommand,
+  DescribeServicesCommandOutput,
   ECSClient,
   ListClustersCommand,
+  ListClustersCommandOutput,
   ListServicesCommand,
+  ListServicesCommandOutput,
 } from "@aws-sdk/client-ecs";
 import { fromIni } from "@aws-sdk/credential-providers";
 
@@ -11,7 +18,7 @@ export interface EcsService {
   cluster: string;
   service: string;
   launchType: string;
-}
+};
 
 export const getEcsServices = async (
   region: string = "us-east-1",
@@ -27,25 +34,31 @@ export const getEcsServices = async (
     region,
     credentials: fromIni({ profile }),
   });
-  const command = new ListClustersCommand({});
+  const command: ListClustersCommand = new ListClustersCommand({});
   const ecsServices: EcsService[] = [];
   try {
     // get all the clusters
-    const clusters = await client.send(command);
+    const clusters: ListClustersCommandOutput = await client.send(command);
     for (const cluster of clusters?.clusterArns) {
-      const listEcsServicesCommand = new ListServicesCommand({
-        cluster: cluster?.split("/")[1],
-      });
-      const servicesList = await client.send(listEcsServicesCommand);
-      if (servicesList?.serviceArns?.length > 0) {
-        // get the services running in a cluster
-        const describeServiceCommand = new DescribeServicesCommand({
-          services: servicesList?.serviceArns?.map(
-            (serviceARN) => serviceARN.split("/")[2]
-          ),
+      const listEcsServicesCommand: ListServicesCommand =
+        new ListServicesCommand({
           cluster: cluster?.split("/")[1],
         });
-        const services = await client.send(describeServiceCommand);
+      const servicesList: ListServicesCommandOutput = await client.send(
+        listEcsServicesCommand
+      );
+      if (servicesList?.serviceArns?.length > 0) {
+        // get the services running in a cluster
+        const describeServiceCommand: DescribeServicesCommand =
+          new DescribeServicesCommand({
+            services: servicesList?.serviceArns?.map(
+              (serviceARN) => serviceARN.split("/")[2]
+            ),
+            cluster: cluster?.split("/")[1],
+          });
+        const services: DescribeServicesCommandOutput = await client.send(
+          describeServiceCommand
+        );
         for (const service of services?.services) {
           if (
             await serviceInVpc(
@@ -78,11 +91,11 @@ const serviceInVpc = async (
   id: String
 ): Promise<boolean> => {
   let present = false;
-  const command = new DescribeSubnetsCommand({
+  const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({
     Filters: [{ Name: "subnet-id", Values: subnets }],
   });
   try {
-    const response = await client.send(command);
+    const response: DescribeSubnetsCommandOutput = await client.send(command);
     if (response?.Subnets?.[0]?.VpcId === id) {
       present = true;
     }

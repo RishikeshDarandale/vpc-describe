@@ -8,7 +8,7 @@ export interface Lambda {
   name: string;
   arn: string;
   runtime: string;
-}
+};
 
 export const getLambdas = async (
   region: string = "us-east-1",

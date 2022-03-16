@@ -29,7 +29,7 @@ import { getVPNGateways, VpnGateway } from "./network/VpnGateway";
 import { output } from "./output/Console";
 
 (async () => {
-  const program = new Command();
+  const program: Command = new Command();
 
   program
     .version("1.0.0", "-v, --version", "output the current version")
@@ -60,28 +60,30 @@ interface Ctx {
   region: string,
   profile: string,
   id: string,
-  vpc: {
-    vpc?: Output,
-    internetGateways?: Output,
-    natGateways?: Output,
-    nACLs?: Output,
-    routeTables?: Output,
-    securityGroups?: Output,
-    subnets?: Output,
-    transitGatewayAttachments? :Output,
-    vpcEndpoints?: Output,
-    ec2s?: Output,
-    asgs?: Output,
-    networkInterfaces?: Output,
-    functions?: Output,
-    dbs?: Output,
-    ccs?: Output,
-    esDomains?: Output,
-    lbs?: Output,
-    lbsv2?: Output,
-    ecs?: Output,
-    vpnGateways?: Output,
-  }
+  vpc: VpcOutput,
+};
+
+export interface VpcOutput {
+  vpc?: Output,
+  internetGateways?: Output,
+  natGateways?: Output,
+  nACLs?: Output,
+  routeTables?: Output,
+  securityGroups?: Output,
+  subnets?: Output,
+  transitGatewayAttachments? :Output,
+  vpcEndpoints?: Output,
+  ec2s?: Output,
+  asgs?: Output,
+  networkInterfaces?: Output,
+  functions?: Output,
+  dbs?: Output,
+  ccs?: Output,
+  esDomains?: Output,
+  lbs?: Output,
+  lbsv2?: Output,
+  ecs?: Output,
+  vpnGateways?: Output,
 };
 
 interface Output {
@@ -93,10 +95,10 @@ interface Output {
    | LoadBalancerV2 [] | EcsService [] | VpnGateway []
 };
 
-const tasks = new Listr<Ctx>([
+const tasks: Listr<Ctx, "default", "verbose"> = new Listr<Ctx>([
   {
     title: "Finding vpc",
-    task: async (ctx) => {
+    task: async (ctx: Ctx) => {
       try {
         const vpc: Vpc = await getVpc(ctx.region, ctx.profile, ctx.id);
         ctx.vpc.vpc = {
@@ -117,7 +119,7 @@ const tasks = new Listr<Ctx>([
         [
           {
             title: "Checking for Internet Gateways",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const internetGateways: InternetGateway[] =
                   await getInternetGateways(ctx.region, ctx.profile, ctx.id);
@@ -134,7 +136,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for NAT Gateways",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const natGateways: NatGateway[] = await getNatGateways(
                   ctx.region,
@@ -154,7 +156,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Network ACLs",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const nACLs: NetworkAcl[] = await getNetworkACLs(
                   ctx.region,
@@ -174,7 +176,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Route tables",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const routeTables: RouteTable[] = await getRouteTables(
                   ctx.region,
@@ -194,7 +196,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Security Groups",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const securityGroups: SecurityGroup[] = await getSecurityGroups(
                   ctx.region,
@@ -214,7 +216,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Subnets",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const subnets: Subnet[] = await getSubnets(
                   ctx.region,
@@ -234,7 +236,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Transit Gateway attachments",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const transitGatewayAttachments: TransitGateway[] =
                   await getTransitGatewayAttachments(
@@ -255,7 +257,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for vpc endpoints attachments",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const vpcEndpoints: VpcEndpoint[] = await getVpcEndpoints(
                   ctx.region,
@@ -275,7 +277,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for EC2s",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const ec2s: EC2Instance[] = await getEC2s(
                   ctx.region,
@@ -295,7 +297,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for ASGs",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const asgs: AutoScalingGroup[] = await getAutoScalingGroups(
                   ctx.region,
@@ -315,7 +317,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Network Interfaces",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const networkInterfaces: NetworkInterface[] =
                   await getNetworkInterfaces(ctx.region, ctx.profile, ctx.id);
@@ -332,7 +334,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Lambda functions",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const functions: Lambda[] = await getLambdas(
                   ctx.region,
@@ -352,7 +354,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for RDS instances",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const dbs: DBInstance[] = await getRDSInstances(
                   ctx.region,
@@ -372,7 +374,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for Cache Clusters",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const ccs: CacheCluster[] = await getCacheClusters(
                   ctx.region,
@@ -392,7 +394,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for open search (formerly elastic search) domains",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const esDomains: ESDomain[] =
                   await getOpenSearchDomains(ctx.region, ctx.profile, ctx.id);
@@ -409,7 +411,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for classic load balancers",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const lbs: LoadBalancer[] = await getLoadBalancers(
                   ctx.region,
@@ -429,7 +431,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for v2 load balancers",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const lbsv2: LoadBalancerV2[] = await getV2LoadBalancers(
                   ctx.region,
@@ -449,7 +451,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for ECS services",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const ecs: EcsService[] = await getEcsServices(
                   ctx.region,
@@ -469,7 +471,7 @@ const tasks = new Listr<Ctx>([
           },
           {
             title: "Checking for VPN Gateways",
-            task: async (ctx) => {
+            task: async (ctx: Ctx) => {
               try {
                 const vpnGateways: VpnGateway[] = await getVPNGateways(
                   ctx.region,
@@ -501,7 +503,7 @@ const describe = async (
   id: string
 ): Promise<void> => {
   try {
-    const context = await tasks.run({
+    const context: Ctx = await tasks.run({
       region,
       profile,
       id,

@@ -1,6 +1,8 @@
 import columnify from 'columnify';
 
-export const output = (vpc: any) => {
+import { VpcOutput } from '..';
+
+export const output = (vpc: VpcOutput) => {
   Object.keys(vpc).forEach((key) =>{
     console.log('================');
     console.log(vpc[key].msg);

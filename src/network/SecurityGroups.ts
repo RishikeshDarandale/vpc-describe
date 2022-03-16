@@ -1,12 +1,13 @@
 import {
   DescribeSecurityGroupsCommand,
+  DescribeSecurityGroupsCommandOutput,
   EC2Client,
 } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
 
 export interface SecurityGroup {
-  id: string,
-  name: string,
+  id: string;
+  name: string;
 };
 
 export const getSecurityGroups = async (
@@ -15,17 +16,20 @@ export const getSecurityGroups = async (
   id: string
 ): Promise<SecurityGroup[]> => {
   // get the client
-  const client = new EC2Client({
+  const client: EC2Client = new EC2Client({
     region,
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
   let securityGroups: SecurityGroup[] = [];
-  const command = new DescribeSecurityGroupsCommand({
-    Filters: [{ Name: "vpc-id", Values: [id] }],
-  });
+  const command: DescribeSecurityGroupsCommand =
+    new DescribeSecurityGroupsCommand({
+      Filters: [{ Name: "vpc-id", Values: [id] }],
+    });
   try {
-    const response = await client.send(command);
+    const response: DescribeSecurityGroupsCommandOutput = await client.send(
+      command
+    );
     response.SecurityGroups?.forEach((sg) => {
       securityGroups.push({
         id: sg.GroupId,

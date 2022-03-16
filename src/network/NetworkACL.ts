@@ -1,11 +1,15 @@
-import { DescribeNetworkAclsCommand, EC2Client } from "@aws-sdk/client-ec2";
+import {
+  DescribeNetworkAclsCommand,
+  DescribeNetworkAclsCommandOutput,
+  EC2Client,
+} from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
 
 export interface NetworkAcl {
   id: string;
   default: boolean;
   subnetIds: string;
-}
+};
 
 export const getNetworkACLs = async (
   region: string = "us-east-1",
@@ -13,17 +17,19 @@ export const getNetworkACLs = async (
   id: string
 ): Promise<NetworkAcl[]> => {
   // get the client
-  const client = new EC2Client({
+  const client: EC2Client = new EC2Client({
     region,
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
   let networkACLs: NetworkAcl[] = [];
-  const command = new DescribeNetworkAclsCommand({
+  const command: DescribeNetworkAclsCommand = new DescribeNetworkAclsCommand({
     Filters: [{ Name: "vpc-id", Values: [id] }],
   });
   try {
-    const response = await client.send(command);
+    const response: DescribeNetworkAclsCommandOutput = await client.send(
+      command
+    );
     response.NetworkAcls?.forEach((nacl) => {
       networkACLs.push({
         id: nacl.NetworkAclId,

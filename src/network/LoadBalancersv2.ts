@@ -1,14 +1,15 @@
 import {
   DescribeLoadBalancersCommand,
+  DescribeLoadBalancersCommandOutput,
   ElasticLoadBalancingV2Client,
 } from "@aws-sdk/client-elastic-load-balancing-v2";
 import { fromIni } from "@aws-sdk/credential-providers";
 
 export interface LoadBalancerV2 {
-  name: string,
-  dnsName: string,
-  type: string,
-  availabilityZones: string,
+  name: string;
+  dnsName: string;
+  type: string;
+  availabilityZones: string;
 };
 
 export const getV2LoadBalancers = async (
@@ -17,15 +18,20 @@ export const getV2LoadBalancers = async (
   id: string
 ): Promise<LoadBalancerV2[]> => {
   // get the client
-  const client = new ElasticLoadBalancingV2Client({
-    region,
-    credentials: fromIni({ profile }),
-  });
+  const client: ElasticLoadBalancingV2Client = new ElasticLoadBalancingV2Client(
+    {
+      region,
+      credentials: fromIni({ profile }),
+    }
+  );
   let lbs: LoadBalancerV2[] = [];
-  const command = new DescribeLoadBalancersCommand({});
+  const command: DescribeLoadBalancersCommand =
+    new DescribeLoadBalancersCommand({});
   try {
     // get all the domains
-    const response = await client.send(command);
+    const response: DescribeLoadBalancersCommandOutput = await client.send(
+      command
+    );
     response?.LoadBalancers?.forEach((lb) => {
       if (lb.VpcId === id) {
         lbs.push({
