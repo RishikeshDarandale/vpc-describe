@@ -18,9 +18,9 @@ aliases:
         - /^pull\/.*$/
         - /^dependabot\/.*$/
 
-  - &master-filter
+  - &main-filter
     branches:
-      only: master
+      only: main
 
   - &release-filter
     tags:
@@ -38,13 +38,13 @@ workflows:
           run-command: test -- --ci --maxWorkers=2
           version: 16.14.0
           filters: *pull-filter
-  # workflow for master branch
-  master:
+  # workflow for main branch
+  main:
     jobs:
       - node/test:
           run-command: test -- --ci --maxWorkers=2
           version: 16.14.0
-          filters: *master-filter
+          filters: *main-filter
   # Release workflow
   release:
     jobs:
