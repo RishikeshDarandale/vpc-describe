@@ -10,8 +10,8 @@ export interface InternetGateway {
 };
 
 export const getInternetGateways = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<InternetGateway[]> => {
   // get the client
@@ -33,9 +33,8 @@ export const getInternetGateways = async (
       internetGateways.push({ id: igw.InternetGatewayId });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the Internet gateways of vpc ${id}`
+      `Error getting the Internet gateways of vpc ${id}`
     );
   }
   return internetGateways;

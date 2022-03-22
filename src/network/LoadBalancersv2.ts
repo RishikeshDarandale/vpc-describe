@@ -13,8 +13,8 @@ export interface LoadBalancerV2 {
 };
 
 export const getV2LoadBalancers = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<LoadBalancerV2[]> => {
   // get the client
@@ -43,9 +43,8 @@ export const getV2LoadBalancers = async (
       }
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the v2 load balancers of vpc ${id}`
+      `Error getting the v2 load balancers of vpc ${id}`
     );
   }
   return lbs;

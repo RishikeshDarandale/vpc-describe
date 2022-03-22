@@ -14,8 +14,8 @@ export interface VpcEndpoint {
 };
 
 export const getVpcEndpoints = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<VpcEndpoint[]> => {
   // get the client
@@ -42,9 +42,8 @@ export const getVpcEndpoints = async (
       });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the vpc endpoints of vpc ${id}`
+      `Error getting the vpc endpoints of vpc ${id}`
     );
   }
   return vpcEndpoints;

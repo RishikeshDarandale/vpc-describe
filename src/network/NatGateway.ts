@@ -12,8 +12,8 @@ export interface NatGateway {
 };
 
 export const getNatGateways = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<NatGateway[]> => {
   // get the client
@@ -38,9 +38,8 @@ export const getNatGateways = async (
       });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the NAT gateways of vpc ${id}`
+      `Error getting the NAT gateways of vpc ${id}`
     );
   }
   return natGateways;

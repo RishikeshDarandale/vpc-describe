@@ -15,8 +15,8 @@ export interface ESDomain {
 };
 
 export const getOpenSearchDomains = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<ESDomain[]> => {
   // get the client
@@ -53,9 +53,8 @@ export const getOpenSearchDomains = async (
       });
     }
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the open search domains of vpc ${id}`
+      `Error getting the open search domains of vpc ${id}`
     );
   }
   return domains;

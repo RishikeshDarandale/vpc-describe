@@ -36,8 +36,7 @@ export const getVpc = async (
       state: response.Vpcs?.[0]?.State?.toString(),
     };
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
-    throw new Error(`${requestId}: Error getting the vpc `);
+    throw new Error(`Error getting the vpc`);
   }
   return vpc;
 };

@@ -9,6 +9,7 @@ import { fromIni } from "@aws-sdk/credential-providers";
 
 export interface CacheCluster {
   id: string;
+  replicationGroupId?: string,
   type: string;
   engine: string;
   engineVersion: string;
@@ -16,8 +17,8 @@ export interface CacheCluster {
 };
 
 export const getCacheClusters = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<CacheCluster[]> => {
   // get the client
@@ -38,6 +39,7 @@ export const getCacheClusters = async (
           ccs.push({
             id: cc.CacheClusterId,
             type: cc.CacheNodeType,
+            replicationGroupId: cc.ReplicationGroupId,
             engine: cc.Engine,
             engineVersion: cc.EngineVersion,
             status: cc.CacheClusterStatus,
@@ -46,9 +48,8 @@ export const getCacheClusters = async (
       })
     );
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the Cache Clusters of vpc ${id}`
+      `Error getting the Cache Clusters of vpc ${id}`
     );
   }
   return ccs;
@@ -72,8 +73,7 @@ const ccSubnetInVpc = async (
       present = true;
     }
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
-    throw new Error(`${requestId}: Error getting the cache subnets`);
+    throw new Error(`Error getting the cache subnets`);
   }
   return present;
 };

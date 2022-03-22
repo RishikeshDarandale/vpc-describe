@@ -12,8 +12,8 @@ export interface NetworkAcl {
 };
 
 export const getNetworkACLs = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<NetworkAcl[]> => {
   // get the client
@@ -40,9 +40,8 @@ export const getNetworkACLs = async (
       });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the network ACLs of vpc ${id}`
+      `Error getting the network ACLs of vpc ${id}`
     );
   }
   return networkACLs;

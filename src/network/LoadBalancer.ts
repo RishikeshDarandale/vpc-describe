@@ -14,8 +14,8 @@ export interface LoadBalancer {
 };
 
 export const getLoadBalancers = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<LoadBalancer[]> => {
   // get the client
@@ -43,9 +43,8 @@ export const getLoadBalancers = async (
       }
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the classic load balancers of vpc ${id}`
+      `Error getting the classic load balancers of vpc ${id}`
     );
   }
   return lbs;

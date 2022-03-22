@@ -12,8 +12,8 @@ export interface Subnet {
 };
 
 export const getSubnets = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<Subnet[]> => {
   // get the client
@@ -36,8 +36,7 @@ export const getSubnets = async (
       });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
-    throw new Error(`${requestId}: Error getting the subnets of vpc ${id}`);
+    throw new Error(`Error getting the subnets of vpc ${id}`);
   }
   return subnets;
 };

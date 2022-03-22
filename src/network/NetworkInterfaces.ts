@@ -12,8 +12,8 @@ export interface NetworkInterface {
 };
 
 export const getNetworkInterfaces = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<NetworkInterface[]> => {
   // get the client
@@ -39,9 +39,8 @@ export const getNetworkInterfaces = async (
       });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the network interfaces of vpc ${id}`
+      `Error getting the network interfaces of vpc ${id}`
     );
   }
   return networkInterfaces;

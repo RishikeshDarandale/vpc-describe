@@ -11,8 +11,8 @@ export interface Lambda {
 };
 
 export const getLambdas = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<Lambda[]> => {
   // get the client

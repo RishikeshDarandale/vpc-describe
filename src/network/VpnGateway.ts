@@ -12,8 +12,8 @@ export interface VpnGateway {
 };
 
 export const getVPNGateways = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string ,
+  profile: string,
   id: string
 ): Promise<VpnGateway[]> => {
   // get the client
@@ -38,9 +38,8 @@ export const getVPNGateways = async (
       });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the VPN gateways of vpc ${id}`
+      `Error getting the VPN gateways of vpc ${id}`
     );
   }
   return vpnGateways;

@@ -13,8 +13,8 @@ export interface EC2Instance {
 };
 
 export const getEC2s = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<EC2Instance[]> => {
   // get the client

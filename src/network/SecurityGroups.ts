@@ -11,8 +11,8 @@ export interface SecurityGroup {
 };
 
 export const getSecurityGroups = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<SecurityGroup[]> => {
   // get the client
@@ -37,9 +37,8 @@ export const getSecurityGroups = async (
       });
     });
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the security groups of vpc ${id}`
+      `Error getting the security groups of vpc ${id}`
     );
   }
   return securityGroups;

@@ -21,8 +21,8 @@ export interface EcsService {
 };
 
 export const getEcsServices = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string,
+  profile: string,
   id: string
 ): Promise<EcsService[]> => {
   // get the client
@@ -77,9 +77,8 @@ export const getEcsServices = async (
       }
     }
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the ECS services of vpc ${id}`
+      `Error getting the ECS services of vpc ${id}`
     );
   }
   return ecsServices;
@@ -100,8 +99,7 @@ const serviceInVpc = async (
       present = true;
     }
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
-    throw new Error(`${requestId}: Error getting the subnets of vpc ${id}`);
+    throw new Error(`Error getting the subnets of vpc ${id}`);
   }
   return present;
 };

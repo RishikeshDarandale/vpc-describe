@@ -7,7 +7,6 @@ import {
   DescribeSubnetsCommand,
   DescribeSubnetsCommandOutput,
   EC2Client,
-  Subnet,
 } from "@aws-sdk/client-ec2";
 import { fromIni } from "@aws-sdk/credential-providers";
 
@@ -17,11 +16,11 @@ export interface AutoScalingGroup {
   minSize: number;
   maxSize: number;
   desiredCapacity: number;
-};
+}
 
 export const getAutoScalingGroups = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string ,
+  profile: string,
   id: string
 ): Promise<AutoScalingGroup[]> => {
   // get the client
@@ -41,7 +40,7 @@ export const getAutoScalingGroups = async (
       command
     );
     await Promise.all(
-      response?.AutoScalingGroups?.map(async (asg) => {
+      response.AutoScalingGroups.map(async (asg) => {
         if (await asgInVpc(asg.VPCZoneIdentifier, ec2client, id)) {
           asgs.push({
             name: asg.AutoScalingGroupName,
@@ -54,9 +53,8 @@ export const getAutoScalingGroups = async (
       })
     );
   } catch (error) {
-    const { requestId, cfId, extendedRequestId } = error.$metadata;
     throw new Error(
-      `${requestId}: Error getting the Auto scaling groups of vpc ${id}`
+      `Error getting the Auto scaling groups of vpc ${id}`
     );
   }
   return asgs;
@@ -67,21 +65,18 @@ const asgInVpc = async (
   client: EC2Client,
   id: String
 ): Promise<boolean> => {
-  const subnets = VPCZoneIdentifier?.split(",");
+  const subnets = VPCZoneIdentifier.split(",");
   let present = false;
-  for (const subnet of subnets) {
-    const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({
-      Filters: [{ Name: "subnet-id", Values: [subnet] }],
-    });
-    try {
-      const response: DescribeSubnetsCommandOutput = await client.send(command);
-      if (response?.Subnets?.[0]?.VpcId === id) {
-        present = true;
-      }
-    } catch (error) {
-      const { requestId, cfId, extendedRequestId } = error.$metadata;
-      throw new Error(`${requestId}: Error getting the subnets of vpc ${id}`);
+  const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({
+    Filters: [{ Name: "subnet-id", Values: subnets }],
+  });
+  try {
+    const response: DescribeSubnetsCommandOutput = await client.send(command);
+    if (response?.Subnets?.[0]?.VpcId === id) {
+      present = true;
     }
+  } catch (error) {
+    throw new Error(`Error getting the subnets of vpc ${id}`);
   }
   return present;
 };
