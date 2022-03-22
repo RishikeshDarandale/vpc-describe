@@ -24,7 +24,7 @@
   "dependencies": {
     "@aws-sdk/client-auto-scaling": "^3.54.0",
     "@aws-sdk/client-ec2": "^3.49.0",
-    "@aws-sdk/client-ecs": "^3.53.0",
+    "@aws-sdk/client-ecs": "^3.55.0",
     "@aws-sdk/client-elastic-load-balancing": "^3.53.0",
     "@aws-sdk/client-elastic-load-balancing-v2": "^3.53.0",
     "@aws-sdk/client-elasticache": "^3.53.0",
