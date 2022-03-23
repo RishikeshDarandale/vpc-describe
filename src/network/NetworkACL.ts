@@ -2,14 +2,14 @@ import {
   DescribeNetworkAclsCommand,
   DescribeNetworkAclsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface NetworkAcl {
   id: string;
   default: boolean;
   subnetIds: string;
-};
+}
 
 export const getNetworkACLs = async (
   region: string,
@@ -24,7 +24,7 @@ export const getNetworkACLs = async (
   // describe the vpc with specified id
   let networkACLs: NetworkAcl[] = [];
   const command: DescribeNetworkAclsCommand = new DescribeNetworkAclsCommand({
-    Filters: [{ Name: "vpc-id", Values: [id] }],
+    Filters: [{ Name: 'vpc-id', Values: [id] }],
   });
   try {
     const response: DescribeNetworkAclsCommandOutput = await client.send(
@@ -36,13 +36,11 @@ export const getNetworkACLs = async (
         default: nacl.IsDefault,
         subnetIds: nacl.Associations?.map(
           (association) => association.SubnetId
-        ).join(","),
+        ).join(','),
       });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the network ACLs of vpc ${id}`
-    );
+    throw new Error(`Error getting the network ACLs of vpc ${id}`);
   }
   return networkACLs;
 };

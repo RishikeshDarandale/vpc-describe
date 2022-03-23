@@ -2,13 +2,13 @@ import {
   DescribeSecurityGroupsCommand,
   DescribeSecurityGroupsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface SecurityGroup {
   id: string;
   name: string;
-};
+}
 
 export const getSecurityGroups = async (
   region: string,
@@ -24,7 +24,7 @@ export const getSecurityGroups = async (
   let securityGroups: SecurityGroup[] = [];
   const command: DescribeSecurityGroupsCommand =
     new DescribeSecurityGroupsCommand({
-      Filters: [{ Name: "vpc-id", Values: [id] }],
+      Filters: [{ Name: 'vpc-id', Values: [id] }],
     });
   try {
     const response: DescribeSecurityGroupsCommandOutput = await client.send(
@@ -37,9 +37,7 @@ export const getSecurityGroups = async (
       });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the security groups of vpc ${id}`
-    );
+    throw new Error(`Error getting the security groups of vpc ${id}`);
   }
   return securityGroups;
 };

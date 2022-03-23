@@ -2,13 +2,13 @@ import {
   DescribeRouteTablesCommand,
   DescribeRouteTablesCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface RouteTable {
   id: string;
   subnetIds: string;
-};
+}
 
 export const getRouteTables = async (
   region: string,
@@ -23,7 +23,7 @@ export const getRouteTables = async (
   // describe the vpc with specified id
   let routeTables: RouteTable[] = [];
   const command: DescribeRouteTablesCommand = new DescribeRouteTablesCommand({
-    Filters: [{ Name: "vpc-id", Values: [id] }],
+    Filters: [{ Name: 'vpc-id', Values: [id] }],
   });
   try {
     const response: DescribeRouteTablesCommandOutput = await client.send(
@@ -32,13 +32,11 @@ export const getRouteTables = async (
     response.RouteTables?.forEach((rt) => {
       routeTables.push({
         id: rt.RouteTableId,
-        subnetIds: rt.Associations?.map((as) => as.SubnetId).join(","),
+        subnetIds: rt.Associations?.map((as) => as.SubnetId).join(','),
       });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the route tables of vpc ${id}`
-    );
+    throw new Error(`Error getting the route tables of vpc ${id}`);
   }
   return routeTables;
 };

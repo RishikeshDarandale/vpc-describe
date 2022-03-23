@@ -2,12 +2,12 @@ import {
   DescribeInternetGatewaysCommand,
   DescribeInternetGatewaysCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface InternetGateway {
   id: string;
-};
+}
 
 export const getInternetGateways = async (
   region: string,
@@ -23,7 +23,7 @@ export const getInternetGateways = async (
   let internetGateways: InternetGateway[] = [];
   const command: DescribeInternetGatewaysCommand =
     new DescribeInternetGatewaysCommand({
-      Filters: [{ Name: "attachment.vpc-id", Values: [id] }],
+      Filters: [{ Name: 'attachment.vpc-id', Values: [id] }],
     });
   try {
     const response: DescribeInternetGatewaysCommandOutput = await client.send(
@@ -33,9 +33,7 @@ export const getInternetGateways = async (
       internetGateways.push({ id: igw.InternetGatewayId });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the Internet gateways of vpc ${id}`
-    );
+    throw new Error(`Error getting the Internet gateways of vpc ${id}`);
   }
   return internetGateways;
 };

@@ -2,14 +2,14 @@ import {
   DescribeSubnetsCommand,
   DescribeSubnetsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface Subnet {
   id: string;
   cidr: string;
   availabilityZone: string;
-};
+}
 
 export const getSubnets = async (
   region: string,
@@ -24,7 +24,7 @@ export const getSubnets = async (
   // describe the vpc with specified id
   let subnets: Subnet[] = [];
   const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({
-    Filters: [{ Name: "vpc-id", Values: [id] }],
+    Filters: [{ Name: 'vpc-id', Values: [id] }],
   });
   try {
     const response: DescribeSubnetsCommandOutput = await client.send(command);

@@ -2,14 +2,14 @@ import {
   DescribeNetworkInterfacesCommand,
   DescribeNetworkInterfacesCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface NetworkInterface {
   id: string;
   type: string;
   subnetId: string;
-};
+}
 
 export const getNetworkInterfaces = async (
   region: string,
@@ -25,7 +25,7 @@ export const getNetworkInterfaces = async (
   let networkInterfaces: NetworkInterface[] = [];
   const command: DescribeNetworkInterfacesCommand =
     new DescribeNetworkInterfacesCommand({
-      Filters: [{ Name: "vpc-id", Values: [id] }],
+      Filters: [{ Name: 'vpc-id', Values: [id] }],
     });
   try {
     const response: DescribeNetworkInterfacesCommandOutput = await client.send(
@@ -39,9 +39,7 @@ export const getNetworkInterfaces = async (
       });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the network interfaces of vpc ${id}`
-    );
+    throw new Error(`Error getting the network interfaces of vpc ${id}`);
   }
   return networkInterfaces;
 };

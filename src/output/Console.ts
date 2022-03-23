@@ -3,7 +3,7 @@ import columnify from 'columnify';
 import { VpcOutput } from '..';
 
 export const output = (vpc: VpcOutput) => {
-  Object.keys(vpc).forEach((key) =>{
+  Object.keys(vpc).forEach((key) => {
     console.log('================');
     console.log(vpc[key].msg);
     console.log('================');
@@ -14,4 +14,4 @@ export const output = (vpc: VpcOutput) => {
     }
     console.log('\n');
   });
-}
+};

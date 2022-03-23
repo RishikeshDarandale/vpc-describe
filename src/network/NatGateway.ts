@@ -2,14 +2,14 @@ import {
   DescribeNatGatewaysCommand,
   DescribeNatGatewaysCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface NatGateway {
   id: string;
   state: string;
   subnetId: string;
-};
+}
 
 export const getNatGateways = async (
   region: string,
@@ -24,7 +24,7 @@ export const getNatGateways = async (
   // describe the vpc with specified id
   let natGateways: NatGateway[] = [];
   const command: DescribeNatGatewaysCommand = new DescribeNatGatewaysCommand({
-    Filter: [{ Name: "vpc-id", Values: [id] }],
+    Filter: [{ Name: 'vpc-id', Values: [id] }],
   });
   try {
     const response: DescribeNatGatewaysCommandOutput = await client.send(
@@ -38,9 +38,7 @@ export const getNatGateways = async (
       });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the NAT gateways of vpc ${id}`
-    );
+    throw new Error(`Error getting the NAT gateways of vpc ${id}`);
   }
   return natGateways;
 };

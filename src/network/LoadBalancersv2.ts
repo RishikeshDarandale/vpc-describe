@@ -2,15 +2,15 @@ import {
   DescribeLoadBalancersCommand,
   DescribeLoadBalancersCommandOutput,
   ElasticLoadBalancingV2Client,
-} from "@aws-sdk/client-elastic-load-balancing-v2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-elastic-load-balancing-v2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface LoadBalancerV2 {
   name: string;
   dnsName: string;
   type: string;
   availabilityZones: string;
-};
+}
 
 export const getV2LoadBalancers = async (
   region: string,
@@ -43,9 +43,7 @@ export const getV2LoadBalancers = async (
       }
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the v2 load balancers of vpc ${id}`
-    );
+    throw new Error(`Error getting the v2 load balancers of vpc ${id}`);
   }
   return lbs;
 };

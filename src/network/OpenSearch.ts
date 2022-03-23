@@ -4,15 +4,15 @@ import {
   ElasticsearchServiceClient,
   ListDomainNamesCommand,
   ListDomainNamesCommandOutput,
-} from "@aws-sdk/client-elasticsearch-service";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-elasticsearch-service';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface ESDomain {
   id: string;
   name: string;
   arn: string;
   subnetIds: string;
-};
+}
 
 export const getOpenSearchDomains = async (
   region: string,
@@ -53,9 +53,7 @@ export const getOpenSearchDomains = async (
       });
     }
   } catch (error) {
-    throw new Error(
-      `Error getting the open search domains of vpc ${id}`
-    );
+    throw new Error(`Error getting the open search domains of vpc ${id}`);
   }
   return domains;
 };

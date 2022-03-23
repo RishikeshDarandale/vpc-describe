@@ -1,16 +1,13 @@
-import {
-  EC2Client,
-  paginateDescribeInstances,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+import { EC2Client, paginateDescribeInstances } from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface EC2Instance {
-  id: string,
-  privateDnsName: string,
-  privateIpAddress: string,
-  subnetId: string,
-  launchTime: Date,
-};
+  id: string;
+  privateDnsName: string;
+  privateIpAddress: string;
+  subnetId: string;
+  launchTime: Date;
+}
 
 export const getEC2s = async (
   region: string,
@@ -28,7 +25,7 @@ export const getEC2s = async (
       pageSize: 25,
     },
     {
-      Filters: [{ Name: "vpc-id", Values: [id] }],
+      Filters: [{ Name: 'vpc-id', Values: [id] }],
     }
   );
 
@@ -45,7 +42,7 @@ export const getEC2s = async (
           subnetId: instance.SubnetId,
           launchTime: instance.LaunchTime,
         });
-      })
+      });
     });
   }
   return ec2s;

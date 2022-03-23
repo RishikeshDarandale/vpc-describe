@@ -2,17 +2,17 @@ import {
   DescribeVpnGatewaysCommand,
   DescribeVpnGatewaysCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface VpnGateway {
   id: string;
   type: string;
   state: string;
-};
+}
 
 export const getVPNGateways = async (
-  region: string ,
+  region: string,
   profile: string,
   id: string
 ): Promise<VpnGateway[]> => {
@@ -24,7 +24,7 @@ export const getVPNGateways = async (
   // describe the vpn gateways with specified vpc id
   let vpnGateways: VpnGateway[] = [];
   const command: DescribeVpnGatewaysCommand = new DescribeVpnGatewaysCommand({
-    Filters: [{ Name: "attachment.vpc-id", Values: [id] }],
+    Filters: [{ Name: 'attachment.vpc-id', Values: [id] }],
   });
   try {
     const response: DescribeVpnGatewaysCommandOutput = await client.send(
@@ -38,9 +38,7 @@ export const getVPNGateways = async (
       });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the VPN gateways of vpc ${id}`
-    );
+    throw new Error(`Error getting the VPN gateways of vpc ${id}`);
   }
   return vpnGateways;
 };

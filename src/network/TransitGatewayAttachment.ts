@@ -2,14 +2,14 @@ import {
   DescribeTransitGatewayVpcAttachmentsCommand,
   DescribeTransitGatewayVpcAttachmentsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface TransitGateway {
   id: string;
   state: string;
   subnetIds: string;
-};
+}
 
 export const getTransitGatewayAttachments = async (
   region: string,
@@ -25,7 +25,7 @@ export const getTransitGatewayAttachments = async (
   let transitGatewayAttachments: TransitGateway[] = [];
   const command: DescribeTransitGatewayVpcAttachmentsCommand =
     new DescribeTransitGatewayVpcAttachmentsCommand({
-      Filters: [{ Name: "vpc-id", Values: [id] }],
+      Filters: [{ Name: 'vpc-id', Values: [id] }],
     });
   try {
     const response: DescribeTransitGatewayVpcAttachmentsCommandOutput =

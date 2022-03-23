@@ -4,17 +4,17 @@ import {
   DescribeCacheSubnetGroupsCommand,
   DescribeCacheSubnetGroupsCommandOutput,
   ElastiCacheClient,
-} from "@aws-sdk/client-elasticache";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-elasticache';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface CacheCluster {
   id: string;
-  replicationGroupId?: string,
+  replicationGroupId?: string;
   type: string;
   engine: string;
   engineVersion: string;
   status: string;
-};
+}
 
 export const getCacheClusters = async (
   region: string,
@@ -48,9 +48,7 @@ export const getCacheClusters = async (
       })
     );
   } catch (error) {
-    throw new Error(
-      `Error getting the Cache Clusters of vpc ${id}`
-    );
+    throw new Error(`Error getting the Cache Clusters of vpc ${id}`);
   }
   return ccs;
 };

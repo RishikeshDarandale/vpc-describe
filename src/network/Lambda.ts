@@ -1,14 +1,11 @@
-import {
-  LambdaClient,
-  paginateListFunctions,
-} from "@aws-sdk/client-lambda";
-import { fromIni } from "@aws-sdk/credential-providers";
+import { LambdaClient, paginateListFunctions } from '@aws-sdk/client-lambda';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface Lambda {
   name: string;
   arn: string;
   runtime: string;
-};
+}
 
 export const getLambdas = async (
   region: string,

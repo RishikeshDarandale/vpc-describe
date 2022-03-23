@@ -2,19 +2,19 @@ import {
   DescribeVpcsCommand,
   DescribeVpcsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface Vpc {
   id: string;
   cidr: string;
   default: boolean;
   state: string;
-};
+}
 
 export const getVpc = async (
-  region: string = "us-east-1",
-  profile: string = "default",
+  region: string = 'us-east-1',
+  profile: string = 'default',
   id: string
 ): Promise<Vpc> => {
   // get the client
@@ -25,7 +25,7 @@ export const getVpc = async (
   // describe the vpc with specified id
   let vpc: Vpc;
   const command: DescribeVpcsCommand = new DescribeVpcsCommand({
-    Filters: [{ Name: "vpc-id", Values: [id] }],
+    Filters: [{ Name: 'vpc-id', Values: [id] }],
   });
   try {
     const response: DescribeVpcsCommandOutput = await client.send(command);

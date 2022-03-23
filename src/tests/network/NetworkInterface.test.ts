@@ -1,20 +1,23 @@
-import { mockClient } from "aws-sdk-client-mock";
+import { mockClient } from 'aws-sdk-client-mock';
 import {
   DescribeNetworkInterfacesCommand,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { getNetworkInterfaces, NetworkInterface } from "../../network/NetworkInterfaces";
+} from '@aws-sdk/client-ec2';
+import {
+  getNetworkInterfaces,
+  NetworkInterface,
+} from '../../network/NetworkInterfaces';
 
 // create the mock clients
 const ec2ClientMock = mockClient(EC2Client);
 
-describe("Network Interface Tests", () => {
+describe('Network Interface Tests', () => {
   beforeEach(() => {
     // reset mock client
     ec2ClientMock.reset();
   });
 
-  it("should return network interfaces associated with passed vpc", async () => {
+  it('should return network interfaces associated with passed vpc', async () => {
     ec2ClientMock.on(DescribeNetworkInterfacesCommand).resolves({
       NetworkInterfaces: [
         {
@@ -28,36 +31,38 @@ describe("Network Interface Tests", () => {
         {
           NetworkInterfaceId: 'ni3',
           InterfaceType: 'ec2',
-        }
+        },
       ],
     });
     const nis: NetworkInterface[] = await getNetworkInterfaces(
-      "us-east-1",
-      "default",
-      "vpc-12345678"
+      'us-east-1',
+      'default',
+      'vpc-12345678'
     );
     expect(nis.length).toBe(3);
-    expect(nis[0].id).toBe("ni1");
+    expect(nis[0].id).toBe('ni1');
   });
 
-  it("should not return network interfaces not associated with passed vpc", async () => {
+  it('should not return network interfaces not associated with passed vpc', async () => {
     ec2ClientMock.on(DescribeNetworkInterfacesCommand).resolves({
       NetworkInterfaces: [],
     });
     const nis: NetworkInterface[] = await getNetworkInterfaces(
-      "us-east-1",
-      "default",
-      "vpc-11111111"
+      'us-east-1',
+      'default',
+      'vpc-11111111'
     );
     expect(nis.length).toBe(0);
   });
 
-  it("should not return network interfaces when network interface fetch fails", async () => {
+  it('should not return network interfaces when network interface fetch fails', async () => {
     ec2ClientMock.on(DescribeNetworkInterfacesCommand).rejects({
-      message: "failed",
+      message: 'failed',
     });
     await expect(
-      getNetworkInterfaces("us-east-1", "default", "vpc-11111111")
-    ).rejects.toThrow("Error getting the network interfaces of vpc vpc-11111111");
+      getNetworkInterfaces('us-east-1', 'default', 'vpc-11111111')
+    ).rejects.toThrow(
+      'Error getting the network interfaces of vpc vpc-11111111'
+    );
   });
 });

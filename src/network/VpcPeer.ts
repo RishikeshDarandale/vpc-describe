@@ -2,8 +2,8 @@ import {
   DescribeVpcPeeringConnectionsCommand,
   DescribeVpcPeeringConnectionsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface VpcPeer {
   id: string;
@@ -28,11 +28,11 @@ export const getVpcPeerConnections = async (
   let vpcPeers: VpcPeer[] = [];
   const asRequesterCommand: DescribeVpcPeeringConnectionsCommand =
     new DescribeVpcPeeringConnectionsCommand({
-      Filters: [{ Name: "requester-vpc-info.vpc-id", Values: [id] }],
+      Filters: [{ Name: 'requester-vpc-info.vpc-id', Values: [id] }],
     });
   const asAcceptorCommand: DescribeVpcPeeringConnectionsCommand =
     new DescribeVpcPeeringConnectionsCommand({
-      Filters: [{ Name: "accepter-vpc-info.vpc-id", Values: [id] }],
+      Filters: [{ Name: 'accepter-vpc-info.vpc-id', Values: [id] }],
     });
   try {
     const requesterResponse: DescribeVpcPeeringConnectionsCommandOutput =

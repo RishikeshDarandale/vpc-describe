@@ -1,69 +1,64 @@
-import { mockClient } from "aws-sdk-client-mock";
+import { mockClient } from 'aws-sdk-client-mock';
 import {
   DescribeCacheClustersCommand,
   DescribeCacheSubnetGroupsCommand,
   ElastiCacheClient,
-} from "@aws-sdk/client-elasticache";
-import { CacheCluster, getCacheClusters } from "../../network/Elasticache";
+} from '@aws-sdk/client-elasticache';
+import { CacheCluster, getCacheClusters } from '../../network/Elasticache';
 
 const elasticacheClientMock = mockClient(ElastiCacheClient);
 
-describe("Elasticache Cluster Tests", () => {
+describe('Elasticache Cluster Tests', () => {
   beforeEach(() => {
     // reset mock client
     elasticacheClientMock.reset();
   });
 
-  it("should return elasticache clusters associated with passed vpc", async () => {
+  it('should return elasticache clusters associated with passed vpc', async () => {
     setPositiveTestMockData();
     const groups: CacheCluster[] = await getCacheClusters(
-      "us-east-1",
-      "default",
-      "vpc-12345678"
+      'us-east-1',
+      'default',
+      'vpc-12345678'
     );
     expect(groups.length).toBe(1);
-    expect(groups[0].id).toBe("cluster1");
+    expect(groups[0].id).toBe('cluster1');
   });
 
-  it("should not return elasticache clusters not associated with passed vpc", async () => {
+  it('should not return elasticache clusters not associated with passed vpc', async () => {
     setPositiveTestMockData();
     const groups: CacheCluster[] = await getCacheClusters(
-      "us-east-1",
-      "default",
-      "vpc-11111111"
+      'us-east-1',
+      'default',
+      'vpc-11111111'
     );
     expect(groups.length).toBe(0);
   });
 
-  it("should not return elasticache clusters when there are no clusters at all", async () => {
+  it('should not return elasticache clusters when there are no clusters at all', async () => {
     elasticacheClientMock.on(DescribeCacheClustersCommand).resolves({
-      CacheClusters: [
-      ],
+      CacheClusters: [],
     });
     const groups: CacheCluster[] = await getCacheClusters(
-      "us-east-1",
-      "default",
-      "vpc-11111111"
+      'us-east-1',
+      'default',
+      'vpc-11111111'
     );
     expect(groups.length).toBe(0);
   });
 
-  it("should not return elasticache clusters when cluster fetch fails", async () => {
+  it('should not return elasticache clusters when cluster fetch fails', async () => {
     clusterFetchFails();
     await expect(
-      getCacheClusters("us-east-1", "default", "vpc-11111111")
-    ).rejects.toThrow(
-      'Error getting the Cache Clusters of vpc vpc-11111111'
-    );
+      getCacheClusters('us-east-1', 'default', 'vpc-11111111')
+    ).rejects.toThrow('Error getting the Cache Clusters of vpc vpc-11111111');
   });
 
-  it("should not return elasticache clusters when subnets related to asg fetch fails", async () => {
+  it('should not return elasticache clusters when subnets related to asg fetch fails', async () => {
     subnetGroupFetchFails();
     await expect(
-      getCacheClusters("us-east-1", "default", "vpc-11111111")
-    ).rejects.toThrow(
-      'Error getting the Cache Clusters of vpc vpc-11111111'
-    );
+      getCacheClusters('us-east-1', 'default', 'vpc-11111111')
+    ).rejects.toThrow('Error getting the Cache Clusters of vpc vpc-11111111');
   });
 });
 
@@ -91,8 +86,8 @@ const setPositiveTestMockData = () => {
       CacheSubnetGroups: [
         {
           VpcId: 'vpc-12345678',
-        }
-      ]
+        },
+      ],
     })
     .on(DescribeCacheSubnetGroupsCommand, {
       CacheSubnetGroupName: 'VpcGroup2',
@@ -101,14 +96,14 @@ const setPositiveTestMockData = () => {
       CacheSubnetGroups: [
         {
           VpcId: 'vpc-87654321',
-        }
-      ]
+        },
+      ],
     });
 };
 
 const clusterFetchFails = () => {
   elasticacheClientMock.on(DescribeCacheClustersCommand).rejects({
-    message: "failed",
+    message: 'failed',
   });
 };
 
@@ -127,8 +122,7 @@ const subnetGroupFetchFails = () => {
       },
     ],
   });
-  elasticacheClientMock
-    .on(DescribeCacheSubnetGroupsCommand).rejects({
-      message: 'failed',
-    })
+  elasticacheClientMock.on(DescribeCacheSubnetGroupsCommand).rejects({
+    message: 'failed',
+  });
 };

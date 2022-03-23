@@ -2,8 +2,8 @@ import {
   DescribeVpcEndpointsCommand,
   DescribeVpcEndpointsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface VpcEndpoint {
   id: string;
@@ -11,7 +11,7 @@ export interface VpcEndpoint {
   serviceName: string;
   state: string;
   subnetIds: string;
-};
+}
 
 export const getVpcEndpoints = async (
   region: string,
@@ -26,7 +26,7 @@ export const getVpcEndpoints = async (
   // describe the vpc with specified id
   let vpcEndpoints: VpcEndpoint[] = [];
   const command: DescribeVpcEndpointsCommand = new DescribeVpcEndpointsCommand({
-    Filters: [{ Name: "vpc-id", Values: [id] }],
+    Filters: [{ Name: 'vpc-id', Values: [id] }],
   });
   try {
     const response: DescribeVpcEndpointsCommandOutput = await client.send(
@@ -42,9 +42,7 @@ export const getVpcEndpoints = async (
       });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the vpc endpoints of vpc ${id}`
-    );
+    throw new Error(`Error getting the vpc endpoints of vpc ${id}`);
   }
   return vpcEndpoints;
 };

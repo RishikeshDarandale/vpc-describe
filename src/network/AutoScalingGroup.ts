@@ -2,13 +2,13 @@ import {
   AutoScalingClient,
   DescribeAutoScalingGroupsCommand,
   DescribeAutoScalingGroupsCommandOutput,
-} from "@aws-sdk/client-auto-scaling";
+} from '@aws-sdk/client-auto-scaling';
 import {
   DescribeSubnetsCommand,
   DescribeSubnetsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ec2';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface AutoScalingGroup {
   name: string;
@@ -19,7 +19,7 @@ export interface AutoScalingGroup {
 }
 
 export const getAutoScalingGroups = async (
-  region: string ,
+  region: string,
   profile: string,
   id: string
 ): Promise<AutoScalingGroup[]> => {
@@ -53,9 +53,7 @@ export const getAutoScalingGroups = async (
       })
     );
   } catch (error) {
-    throw new Error(
-      `Error getting the Auto scaling groups of vpc ${id}`
-    );
+    throw new Error(`Error getting the Auto scaling groups of vpc ${id}`);
   }
   return asgs;
 };
@@ -65,10 +63,10 @@ const asgInVpc = async (
   client: EC2Client,
   id: String
 ): Promise<boolean> => {
-  const subnets = VPCZoneIdentifier.split(",");
+  const subnets = VPCZoneIdentifier.split(',');
   let present = false;
   const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({
-    Filters: [{ Name: "subnet-id", Values: subnets }],
+    Filters: [{ Name: 'subnet-id', Values: subnets }],
   });
   try {
     const response: DescribeSubnetsCommandOutput = await client.send(command);

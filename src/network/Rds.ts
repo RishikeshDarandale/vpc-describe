@@ -2,8 +2,8 @@ import {
   DescribeDBInstancesCommand,
   DescribeDBInstancesCommandOutput,
   RDSClient,
-} from "@aws-sdk/client-rds";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-rds';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface DBInstance {
   id: string;
@@ -12,7 +12,7 @@ export interface DBInstance {
   class: string;
   engine: string;
   status: string;
-};
+}
 
 export const getRDSInstances = async (
   region: string,
@@ -45,9 +45,7 @@ export const getRDSInstances = async (
         });
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the RDS instances of vpc ${id}`
-    );
+    throw new Error(`Error getting the RDS instances of vpc ${id}`);
   }
   return dbInstances;
 };

@@ -1,17 +1,17 @@
-import { mockClient } from "aws-sdk-client-mock";
-import { DescribeSubnetsCommand, EC2Client } from "@aws-sdk/client-ec2";
-import { getSubnets, Subnet } from "../../network/Subnet";
+import { mockClient } from 'aws-sdk-client-mock';
+import { DescribeSubnetsCommand, EC2Client } from '@aws-sdk/client-ec2';
+import { getSubnets, Subnet } from '../../network/Subnet';
 
 // create the mock clients
 const ec2ClientMock = mockClient(EC2Client);
 
-describe("Subnet Tests", () => {
+describe('Subnet Tests', () => {
   beforeEach(() => {
     // reset mock client
     ec2ClientMock.reset();
   });
 
-  it("should return subnets associated with passed vpc", async () => {
+  it('should return subnets associated with passed vpc', async () => {
     ec2ClientMock.on(DescribeSubnetsCommand).resolves({
       Subnets: [
         {
@@ -33,32 +33,32 @@ describe("Subnet Tests", () => {
       ],
     });
     const subnets: Subnet[] = await getSubnets(
-      "us-east-1",
-      "default",
-      "vpc-12345678"
+      'us-east-1',
+      'default',
+      'vpc-12345678'
     );
     expect(subnets.length).toBe(4);
-    expect(subnets[0].id).toBe("subnet1");
+    expect(subnets[0].id).toBe('subnet1');
   });
 
-  it("should not return subnets not associated with passed vpc", async () => {
+  it('should not return subnets not associated with passed vpc', async () => {
     ec2ClientMock.on(DescribeSubnetsCommand).resolves({
       Subnets: [],
     });
     const subnets: Subnet[] = await getSubnets(
-      "us-east-1",
-      "default",
-      "vpc-11111111"
+      'us-east-1',
+      'default',
+      'vpc-11111111'
     );
     expect(subnets.length).toBe(0);
   });
 
-  it("should not return subnets when subnet fetch fails", async () => {
+  it('should not return subnets when subnet fetch fails', async () => {
     ec2ClientMock.on(DescribeSubnetsCommand).rejects({
-      message: "failed",
+      message: 'failed',
     });
     await expect(
-      getSubnets("us-east-1", "default", "vpc-11111111")
-    ).rejects.toThrow("Error getting the subnets of vpc vpc-11111111");
+      getSubnets('us-east-1', 'default', 'vpc-11111111')
+    ).rejects.toThrow('Error getting the subnets of vpc vpc-11111111');
   });
 });

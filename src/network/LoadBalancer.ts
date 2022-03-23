@@ -2,8 +2,8 @@ import {
   DescribeLoadBalancersCommand,
   DescribeLoadBalancersCommandOutput,
   ElasticLoadBalancingClient,
-} from "@aws-sdk/client-elastic-load-balancing";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-elastic-load-balancing';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface LoadBalancer {
   name: string;
@@ -11,7 +11,7 @@ export interface LoadBalancer {
   subnets: string;
   instances: string;
   availabilityZones: string;
-};
+}
 
 export const getLoadBalancers = async (
   region: string,
@@ -43,9 +43,7 @@ export const getLoadBalancers = async (
       }
     });
   } catch (error) {
-    throw new Error(
-      `Error getting the classic load balancers of vpc ${id}`
-    );
+    throw new Error(`Error getting the classic load balancers of vpc ${id}`);
   }
   return lbs;
 };

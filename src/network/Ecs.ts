@@ -2,7 +2,7 @@ import {
   DescribeSubnetsCommand,
   DescribeSubnetsCommandOutput,
   EC2Client,
-} from "@aws-sdk/client-ec2";
+} from '@aws-sdk/client-ec2';
 import {
   DescribeServicesCommand,
   DescribeServicesCommandOutput,
@@ -11,14 +11,14 @@ import {
   ListClustersCommandOutput,
   ListServicesCommand,
   ListServicesCommandOutput,
-} from "@aws-sdk/client-ecs";
-import { fromIni } from "@aws-sdk/credential-providers";
+} from '@aws-sdk/client-ecs';
+import { fromIni } from '@aws-sdk/credential-providers';
 
 export interface EcsService {
   cluster: string;
   service: string;
   launchType: string;
-};
+}
 
 export const getEcsServices = async (
   region: string,
@@ -42,7 +42,7 @@ export const getEcsServices = async (
     for (const cluster of clusters?.clusterArns) {
       const listEcsServicesCommand: ListServicesCommand =
         new ListServicesCommand({
-          cluster: cluster?.split("/")[1],
+          cluster: cluster?.split('/')[1],
         });
       const servicesList: ListServicesCommandOutput = await client.send(
         listEcsServicesCommand
@@ -52,9 +52,9 @@ export const getEcsServices = async (
         const describeServiceCommand: DescribeServicesCommand =
           new DescribeServicesCommand({
             services: servicesList?.serviceArns?.map(
-              (serviceARN) => serviceARN.split("/")[2]
+              (serviceARN) => serviceARN.split('/')[2]
             ),
-            cluster: cluster?.split("/")[1],
+            cluster: cluster?.split('/')[1],
           });
         const services: DescribeServicesCommandOutput = await client.send(
           describeServiceCommand
@@ -69,7 +69,7 @@ export const getEcsServices = async (
           ) {
             ecsServices.push({
               service: service.serviceName,
-              cluster: service.clusterArn?.split("/")[1],
+              cluster: service.clusterArn?.split('/')[1],
               launchType: service.launchType,
             });
           }
@@ -77,9 +77,7 @@ export const getEcsServices = async (
       }
     }
   } catch (error) {
-    throw new Error(
-      `Error getting the ECS services of vpc ${id}`
-    );
+    throw new Error(`Error getting the ECS services of vpc ${id}`);
   }
   return ecsServices;
 };
@@ -91,7 +89,7 @@ const serviceInVpc = async (
 ): Promise<boolean> => {
   let present = false;
   const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({
-    Filters: [{ Name: "subnet-id", Values: subnets }],
+    Filters: [{ Name: 'subnet-id', Values: subnets }],
   });
   try {
     const response: DescribeSubnetsCommandOutput = await client.send(command);
