@@ -2,8 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/RishikeshDarandale/vpc-describe/tree/main.svg?style=svg)](https://circleci.com/gh/RishikeshDarandale/vpc-describe/tree/main)
 ![CodeQL Analysis](https://github.com/RishikeshDarandale/vpc-describe/actions/workflows/codeql-analysis.yml/badge.svg)
-[![npm](https://img.shields.io/npm/dt/vpc-describe.svg)](https://www.npmjs.com/package/vpc-describe)
-[![NpmLicense](https://img.shields.io/npm/l/vpc-describe.svg)](https://github.com/RishikeshDarandale/vpc-describe/blob/main/LICENSE)
+[![npm](https://img.shields.io/npm/v/vpc-describe)](https://www.npmjs.com/package/vpc-describe)
+[![NpmLicense](https://img.shields.io/npm/l/vpc-describe)](https://github.com/RishikeshDarandale/vpc-describe/blob/main/LICENSE)
 
 Describe the aws vpc to list associated resources with it...
 
