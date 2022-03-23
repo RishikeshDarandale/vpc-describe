@@ -1,0 +1,9 @@
+'*.ts':
+  - prettier --check
+  - eslint
+'*.json':
+  - prettier --check
+'*.yml':
+  - prettier --check
+'*.md{,x}':
+  - prettier --check
