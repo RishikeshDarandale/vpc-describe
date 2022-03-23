@@ -12,7 +12,7 @@
     "build": "tsc",
     "test": "jest --coverage",
     "prepare": "npm run build && husky install",
-    "prepublishOnly": "npm test",
+    "prepublishOnly": "npm test -- --ci --maxWorkers=2",
     "deploy": "npm publish"
   },
   "repository": {
