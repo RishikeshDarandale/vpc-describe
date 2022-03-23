@@ -25,6 +25,7 @@ import { getTransitGatewayAttachments, TransitGateway } from "./network/TransitG
 
 import { getVpc, Vpc } from "./network/Vpc";
 import { getVpcEndpoints, VpcEndpoint } from "./network/VpcEndpoint";
+import { getVpcPeerConnections, VpcPeer } from "./network/VpcPeer";
 import { getVPNGateways, VpnGateway } from "./network/VpnGateway";
 import { output } from "./output/Console";
 
@@ -84,6 +85,7 @@ export interface VpcOutput {
   lbsv2?: Output,
   ecs?: Output,
   vpnGateways?: Output,
+  vpcPeers?: Output,
 };
 
 interface Output {
@@ -92,7 +94,7 @@ interface Output {
    | SecurityGroup [] | Subnet [] | TransitGateway[] | VpcEndpoint []
    | EC2Instance [] | AutoScalingGroup[] | NetworkInterface[] | Lambda []
    | DBInstance [] | CacheCluster [] | ESDomain [] | LoadBalancer[]
-   | LoadBalancerV2 [] | EcsService [] | VpnGateway []
+   | LoadBalancerV2 [] | EcsService [] | VpnGateway [] | VpcPeer []
 };
 
 const tasks: Listr<Ctx, "default", "verbose"> = new Listr<Ctx>([
@@ -485,6 +487,26 @@ const tasks: Listr<Ctx, "default", "verbose"> = new Listr<Ctx>([
               } catch (error) {
                 throw new Error(
                   "Could not list ECS services, please check the vpc id / credentials provided"
+                );
+              }
+            },
+          },
+          {
+            title: "Checking for VPC Peers",
+            task: async (ctx: Ctx) => {
+              try {
+                const vpcPeers: VpcPeer[] = await getVpcPeerConnections(
+                  ctx.region,
+                  ctx.profile,
+                  ctx.id
+                );
+                ctx.vpc.vpcPeers = {
+                  msg: 'VPC Peers associated with VPC',
+                  data: vpcPeers
+                };
+              } catch (error) {
+                throw new Error(
+                  "Could not list VPC peers, please check the vpc id / credentials provided"
                 );
               }
             },
