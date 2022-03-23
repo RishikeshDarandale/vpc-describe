@@ -39,7 +39,7 @@ export const getEcsServices = async (
   try {
     // get all the clusters
     const clusters: ListClustersCommandOutput = await client.send(command);
-    for (const cluster of clusters?.clusterArns) {
+    for (const cluster of clusters.clusterArns) {
       const listEcsServicesCommand: ListServicesCommand =
         new ListServicesCommand({
           cluster: cluster?.split('/')[1],
@@ -59,7 +59,7 @@ export const getEcsServices = async (
         const services: DescribeServicesCommandOutput = await client.send(
           describeServiceCommand
         );
-        for (const service of services?.services) {
+        for (const service of services.services) {
           if (
             await serviceInVpc(
               service.networkConfiguration.awsvpcConfiguration.subnets,
@@ -85,7 +85,7 @@ export const getEcsServices = async (
 const serviceInVpc = async (
   subnets: string[],
   client: EC2Client,
-  id: String
+  id: string
 ): Promise<boolean> => {
   let present = false;
   const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({

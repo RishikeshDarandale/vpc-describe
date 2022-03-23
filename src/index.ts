@@ -553,9 +553,9 @@ const tasks: Listr<Ctx, 'default', 'verbose'> = new Listr<Ctx>([
 ]);
 
 const describe = async (
-  region: string = 'us-east-1',
-  profile: string = 'default',
-  outputFormat: string = 'tabular',
+  region = 'us-east-1',
+  profile = 'default',
+  outputFormat = 'tabular',
   id: string
 ): Promise<void> => {
   try {

@@ -22,7 +22,7 @@ export const getNetworkACLs = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let networkACLs: NetworkAcl[] = [];
+  const networkACLs: NetworkAcl[] = [];
   const command: DescribeNetworkAclsCommand = new DescribeNetworkAclsCommand({
     Filters: [{ Name: 'vpc-id', Values: [id] }],
   });

@@ -13,8 +13,8 @@ export interface Vpc {
 }
 
 export const getVpc = async (
-  region: string = 'us-east-1',
-  profile: string = 'default',
+  region = 'us-east-1',
+  profile = 'default',
   id: string
 ): Promise<Vpc> => {
   // get the client

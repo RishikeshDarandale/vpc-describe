@@ -24,7 +24,7 @@ export const getRDSInstances = async (
     region,
     credentials: fromIni({ profile }),
   });
-  let dbInstances: DBInstance[] = [];
+  const dbInstances: DBInstance[] = [];
   const command: DescribeDBInstancesCommand = new DescribeDBInstancesCommand(
     {}
   );

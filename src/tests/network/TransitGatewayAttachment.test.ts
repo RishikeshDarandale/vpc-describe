@@ -3,7 +3,6 @@ import {
   DescribeTransitGatewayVpcAttachmentsCommand,
   EC2Client,
 } from '@aws-sdk/client-ec2';
-import { getRouteTables, RouteTable } from '../../network/RouteTable';
 import {
   getTransitGatewayAttachments,
   TransitGateway,

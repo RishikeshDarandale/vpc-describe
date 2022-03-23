@@ -3,7 +3,6 @@ import {
   DescribeVpcPeeringConnectionsCommand,
   EC2Client,
 } from '@aws-sdk/client-ec2';
-import { getSubnets, Subnet } from '../../network/Subnet';
 import { getVpcPeerConnections, VpcPeer } from '../../network/VpcPeer';
 
 // create the mock clients

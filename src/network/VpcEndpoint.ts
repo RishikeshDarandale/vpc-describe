@@ -24,7 +24,7 @@ export const getVpcEndpoints = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let vpcEndpoints: VpcEndpoint[] = [];
+  const vpcEndpoints: VpcEndpoint[] = [];
   const command: DescribeVpcEndpointsCommand = new DescribeVpcEndpointsCommand({
     Filters: [{ Name: 'vpc-id', Values: [id] }],
   });

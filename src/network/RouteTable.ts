@@ -21,7 +21,7 @@ export const getRouteTables = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let routeTables: RouteTable[] = [];
+  const routeTables: RouteTable[] = [];
   const command: DescribeRouteTablesCommand = new DescribeRouteTablesCommand({
     Filters: [{ Name: 'vpc-id', Values: [id] }],
   });

@@ -21,7 +21,7 @@ export const getSecurityGroups = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let securityGroups: SecurityGroup[] = [];
+  const securityGroups: SecurityGroup[] = [];
   const command: DescribeSecurityGroupsCommand =
     new DescribeSecurityGroupsCommand({
       Filters: [{ Name: 'vpc-id', Values: [id] }],

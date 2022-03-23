@@ -25,7 +25,7 @@ export const getVpcPeerConnections = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let vpcPeers: VpcPeer[] = [];
+  const vpcPeers: VpcPeer[] = [];
   const asRequesterCommand: DescribeVpcPeeringConnectionsCommand =
     new DescribeVpcPeeringConnectionsCommand({
       Filters: [{ Name: 'requester-vpc-info.vpc-id', Values: [id] }],

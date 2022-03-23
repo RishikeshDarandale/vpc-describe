@@ -22,7 +22,7 @@ export const getNatGateways = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let natGateways: NatGateway[] = [];
+  const natGateways: NatGateway[] = [];
   const command: DescribeNatGatewaysCommand = new DescribeNatGatewaysCommand({
     Filter: [{ Name: 'vpc-id', Values: [id] }],
   });

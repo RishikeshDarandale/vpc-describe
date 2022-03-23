@@ -22,7 +22,7 @@ export const getSubnets = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let subnets: Subnet[] = [];
+  const subnets: Subnet[] = [];
   const command: DescribeSubnetsCommand = new DescribeSubnetsCommand({
     Filters: [{ Name: 'vpc-id', Values: [id] }],
   });

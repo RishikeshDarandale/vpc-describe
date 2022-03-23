@@ -22,7 +22,7 @@ export const getTransitGatewayAttachments = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let transitGatewayAttachments: TransitGateway[] = [];
+  const transitGatewayAttachments: TransitGateway[] = [];
   const command: DescribeTransitGatewayVpcAttachmentsCommand =
     new DescribeTransitGatewayVpcAttachmentsCommand({
       Filters: [{ Name: 'vpc-id', Values: [id] }],

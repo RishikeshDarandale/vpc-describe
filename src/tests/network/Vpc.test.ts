@@ -1,6 +1,5 @@
 import { mockClient } from 'aws-sdk-client-mock';
 import { DescribeVpcsCommand, EC2Client } from '@aws-sdk/client-ec2';
-import { getSubnets, Subnet } from '../../network/Subnet';
 import { getVpc, Vpc } from '../../network/Vpc';
 
 // create the mock clients

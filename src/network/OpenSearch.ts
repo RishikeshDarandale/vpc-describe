@@ -24,7 +24,7 @@ export const getOpenSearchDomains = async (
     region,
     credentials: fromIni({ profile }),
   });
-  let domains: ESDomain[] = [];
+  const domains: ESDomain[] = [];
   const command: ListDomainNamesCommand = new ListDomainNamesCommand({});
   try {
     // get all the domains

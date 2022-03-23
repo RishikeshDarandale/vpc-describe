@@ -26,7 +26,7 @@ export const getCacheClusters = async (
     region,
     credentials: fromIni({ profile }),
   });
-  let ccs: CacheCluster[] = [];
+  const ccs: CacheCluster[] = [];
   const command: DescribeCacheClustersCommand =
     new DescribeCacheClustersCommand({});
   try {
@@ -56,7 +56,7 @@ export const getCacheClusters = async (
 const ccSubnetInVpc = async (
   cacheSubnetGroupName: string,
   client: ElastiCacheClient,
-  id: String
+  id: string
 ): Promise<boolean> => {
   let present = false;
   const command: DescribeCacheSubnetGroupsCommand =

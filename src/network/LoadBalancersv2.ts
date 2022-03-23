@@ -24,7 +24,7 @@ export const getV2LoadBalancers = async (
       credentials: fromIni({ profile }),
     }
   );
-  let lbs: LoadBalancerV2[] = [];
+  const lbs: LoadBalancerV2[] = [];
   const command: DescribeLoadBalancersCommand =
     new DescribeLoadBalancersCommand({});
   try {

@@ -23,7 +23,7 @@ export const getLoadBalancers = async (
     region,
     credentials: fromIni({ profile }),
   });
-  let lbs: LoadBalancer[] = [];
+  const lbs: LoadBalancer[] = [];
   const command: DescribeLoadBalancersCommand =
     new DescribeLoadBalancersCommand({});
   try {

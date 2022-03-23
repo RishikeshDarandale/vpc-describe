@@ -22,7 +22,7 @@ export const getNetworkInterfaces = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let networkInterfaces: NetworkInterface[] = [];
+  const networkInterfaces: NetworkInterface[] = [];
   const command: DescribeNetworkInterfacesCommand =
     new DescribeNetworkInterfacesCommand({
       Filters: [{ Name: 'vpc-id', Values: [id] }],

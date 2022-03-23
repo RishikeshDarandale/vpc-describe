@@ -20,7 +20,7 @@ export const getInternetGateways = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpc with specified id
-  let internetGateways: InternetGateway[] = [];
+  const internetGateways: InternetGateway[] = [];
   const command: DescribeInternetGatewaysCommand =
     new DescribeInternetGatewaysCommand({
       Filters: [{ Name: 'attachment.vpc-id', Values: [id] }],

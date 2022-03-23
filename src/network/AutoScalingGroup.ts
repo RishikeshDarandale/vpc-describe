@@ -32,7 +32,7 @@ export const getAutoScalingGroups = async (
     region,
     credentials: fromIni({ profile }),
   });
-  let asgs: AutoScalingGroup[] = [];
+  const asgs: AutoScalingGroup[] = [];
   const command: DescribeAutoScalingGroupsCommand =
     new DescribeAutoScalingGroupsCommand({});
   try {
@@ -61,7 +61,7 @@ export const getAutoScalingGroups = async (
 const asgInVpc = async (
   VPCZoneIdentifier: string,
   client: EC2Client,
-  id: String
+  id: string
 ): Promise<boolean> => {
   const subnets = VPCZoneIdentifier.split(',');
   let present = false;

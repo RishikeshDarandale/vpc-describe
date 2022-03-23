@@ -22,7 +22,7 @@ export const getVPNGateways = async (
     credentials: fromIni({ profile }),
   });
   // describe the vpn gateways with specified vpc id
-  let vpnGateways: VpnGateway[] = [];
+  const vpnGateways: VpnGateway[] = [];
   const command: DescribeVpnGatewaysCommand = new DescribeVpnGatewaysCommand({
     Filters: [{ Name: 'attachment.vpc-id', Values: [id] }],
   });
