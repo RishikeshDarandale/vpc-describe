@@ -8,9 +8,12 @@
   },
   "scripts": {
     "prebuild": "rm -rf dist",
+    "pretest": "npm audit --production && prettier --check . && eslint ./src",
     "build": "tsc",
     "test": "jest --coverage",
-    "prepare": "npm run build && husky install"
+    "prepare": "npm run build && husky install",
+    "prepublishOnly": "npm test",
+    "deploy": "npm publish"
   },
   "repository": {
     "type": "git",
